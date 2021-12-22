@@ -24,7 +24,7 @@ export default function Home() {
             )
           </li>
           <li>
-            <Link href="/api/data">
+            <Link href="/api/date">
               <a target="_blank" rel="noreferrer">
                 example of Go API
               </a>
