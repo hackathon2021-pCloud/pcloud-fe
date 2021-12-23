@@ -1,6 +1,4 @@
-<img src="https://i.imgur.com/eBbvYH8.png" style="display: block; margin: auto; width: 20%;" />
-
-# Welcome to <span><span style="color: #00aeef;">p</span><span style="background-image: -moz-linear-gradient(45deg, #00aeef, #061b51);background-image: linear-gradient(45deg, #00aeef, #061b51);background-size: 100%;background-repeat: repeat;-webkit-background-clip: text;-webkit-text-fill-color: transparent;-moz-background-clip: text;-moz-text-fill-color: transparent;">Cloud</span></span>
+<a href="https://pcloud-fe.vercel.app/"><img src="./public/welcome.png" style="display: block; margin: auto; width: 70%"></a>
 
 - [RFC: pCloud User flow](https://docs.google.com/document/d/1adgqQrHebADybfvWuWP-lF5dywtSPAaNBcpyeTXAq5w/edit#)
 
@@ -15,6 +13,8 @@ frontend resrouces are built and delivered by Vercel.
 APIs are severless functions deployed on AWS ap-east-1
 
 using redis as data base, hosted by [upstash](https://console.upstash.com/redis/d67541bf-3904-488d-a612-6ecf5393891e), max 10K commands per day
+
+Logo:     <img src="https://i.imgur.com/eBbvYH8.png" style="width: 70px;" />
 
 ## development
 
