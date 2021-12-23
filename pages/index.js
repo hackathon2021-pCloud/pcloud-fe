@@ -17,6 +17,15 @@ export default function Home() {
     }
   }, [error])
 
+  let userElement = null
+  if (user) {
+    userElement = <Avatar user={user} />;
+  } else if (isLoading) {
+    userElement = 'loading...'
+  } else {
+    userElement = <a href="/api/auth/login">Login</a>;
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -28,7 +37,7 @@ export default function Home() {
         </h1>
         <div className={styles.youandme}>
           {/* eslint-disable-next-line */}
-          <Logo /> + {user ? <Avatar user={user} /> : <a href="/api/auth/login">Login</a>}
+          <Logo /> + {userElement}
         </div>
         {/* <ul>
           <li>
