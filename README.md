@@ -11,9 +11,11 @@ frontend resrouces are built and delivered by Vercel.
 
 APIs are severless functions deployed on AWS ap-east-1
 
-using redis as data base, hosted by [upstash](https://console.upstash.com/redis/d67541bf-3904-488d-a612-6ecf5393891e), max 10K commands per day
+using redis as database, hosted by [upstash](https://console.upstash.com/redis/d67541bf-3904-488d-a612-6ecf5393891e), max 10K commands per day
 
-Logo:     <img src="https://i.imgur.com/eBbvYH8.png" style="width: 70px;" />
+logo:
+
+<img src="https://i.imgur.com/eBbvYH8.png" style="width: 70px;" />
 
 ## development
 
