@@ -1,10 +1,9 @@
 <a href="https://pcloud-fe.vercel.app/"><img src="./public/welcome.png" style="display: block; margin: auto; width: 70%"></a>
 
-- [RFC: pCloud User flow](https://docs.google.com/document/d/1adgqQrHebADybfvWuWP-lF5dywtSPAaNBcpyeTXAq5w/edit#)
-
 ## basic info
 
 - [Home Page](https://pcloud-fe.vercel.app/)
+- [RFC: pCloud User flow](https://docs.google.com/document/d/1adgqQrHebADybfvWuWP-lF5dywtSPAaNBcpyeTXAq5w/edit#)
 - [Deployment History](https://vercel.com/pcloud-fe/pcloud-fe/deployments)
 - [API Logs](https://vercel.com/pcloud-fe/pcloud-fe/DLjxmfREGcDWfHs2d3qs9gSpVcPJ/functions?name=api%2Fdate.go)
 
