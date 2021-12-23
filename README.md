@@ -16,5 +16,5 @@ using redis as data base, hosted by [upstash](https://console.upstash.com/redis/
 
 ## development
 
-1. to add new APIs, create file under `./api` folder. for example, `./api/date.go` will be handling request to `https://pcloud-fe.vercel.app/api/date`
-2. to deploy your code, just push to `main` branch, the deployment will start automatically and finish in minutes
+1. to add new APIs, create file under `./api` folder. for example, `./api/date.js` will be handling request to `https://pcloud-fe.vercel.app/api/date`; if need to use other languages (Go, Python and Ruby), see [pcloud-be](https://github.com/wanghaoPolar/pcloud-be/tree/main)
+2. to deploy your code, push the commit to `main` branch, the deployment will start automatically and finish in minutes
