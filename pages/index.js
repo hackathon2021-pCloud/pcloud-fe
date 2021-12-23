@@ -6,14 +6,16 @@ import { useUser } from "@auth0/nextjs-auth0";
 import Avatar from "../components/Avatar";
 import PCloud from '../components/PCloud';
 import Logo from '../components/Logo';
+import { useEffect } from 'react';
 
 export default function Home() {
   const { user, error, isLoading } = useUser();
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
-
-  console.log(user);
+  useEffect(() => {
+    if (error) {
+      window.alert(error)
+    }
+  }, [error])
 
   return (
     <div className={styles.container}>
