@@ -2,13 +2,33 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import Link from "next/link";
+import { useUser } from "@auth0/nextjs-auth0";
+import Avatar from "../components/Avatar";
+import PCloud from '../components/PCloud';
+import Logo from '../components/Logo';
 
 export default function Home() {
+  const { user, error, isLoading } = useUser();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
+
+  console.log(user);
+
   return (
     <div className={styles.container}>
+      <Head>
+        <title>pCloud</title>
+      </Head>
       <main className={styles.main}>
-        <h1 className={styles.title}>Welcome to pcloud</h1>
-        <ul>
+        <h1 className={styles.title}>
+          Welcome to <PCloud />
+        </h1>
+        <div className={styles.youandme}>
+          {/* eslint-disable-next-line */}
+          <Logo /> + {user ? <Avatar user={user} /> : <a href="/api/auth/login">Login</a>}
+        </div>
+        {/* <ul>
           <li>
             <Link href="/api/hello">
               <a target="_blank" rel="noreferrer">
@@ -37,7 +57,12 @@ export default function Home() {
             </Link>
             )
           </li>
-        </ul>
+          <li>
+            <Link href="/api/auth/logout">
+              <a>Logout</a>
+            </Link>
+          </li>
+        </ul> */}
       </main>
     </div>
   );

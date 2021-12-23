@@ -1,0 +1,13 @@
+.p {
+	color: #00aeef;
+}
+
+.cloud {
+  background-image: linear-gradient(45deg, #00aeef, #061b51);
+  background-size: 100%;
+  background-repeat: repeat;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
+}

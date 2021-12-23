@@ -46,6 +46,7 @@
 
 .title {
   margin: 0;
+  margin-bottom: 30px;
   line-height: 1.15;
   font-size: 4rem;
 }
@@ -118,4 +119,17 @@
     width: 100%;
     flex-direction: column;
   }
+}
+
+.youandme {
+  margin: 10px 0;
+  min-width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.youandme img {
+  margin-right: -8px;
 }
