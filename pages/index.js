@@ -37,7 +37,7 @@ export default function Home() {
           Welcome to <PCloud />
         </h1>
         <div className={styles.youandme}>
-          <Logo /> + {userElement}
+          <Logo /> + <div className={styles.userHolder}>{userElement}</div>
         </div>
         {/* <ul>
           <li>
