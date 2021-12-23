@@ -23,6 +23,7 @@ export default function Home() {
   } else if (isLoading) {
     userElement = 'loading...'
   } else {
+    // eslint-disable-next-line
     userElement = <a href="/api/auth/login">Login</a>;
   }
 
@@ -36,7 +37,6 @@ export default function Home() {
           Welcome to <PCloud />
         </h1>
         <div className={styles.youandme}>
-          {/* eslint-disable-next-line */}
           <Logo /> + {userElement}
         </div>
         {/* <ul>
