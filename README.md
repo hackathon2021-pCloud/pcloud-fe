@@ -1,4 +1,4 @@
-<a href="https://pcloud-fe.vercel.app/"><img src="./public/welcome.png" style="display: block; margin: auto; width: 70%"></a>
+<a href="https://pcloud-fe.vercel.app/"><img src="./public/welcome.png" style="display: block; margin: auto; width: 80%"></a>
 
 ## basic info
 
@@ -15,7 +15,7 @@ using redis as database, hosted by [upstash](https://console.upstash.com/redis/d
 
 logo:
 
-<img src="https://i.imgur.com/eBbvYH8.png" style="width: 70px;" />
+<img src="./public/logo-v1-bg.svg" width="200" />
 
 ## development
 
