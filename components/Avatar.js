@@ -1,9 +1,10 @@
 import * as styles from './Avatar.module.css'
+import Image from "next/image";
 
 export default function Avatar({user}) {
 	return (
     <div className={styles.wrapper}>
-      <img src={user.picture} className={styles.image} />
+      <Image src={user.picture} className={styles.image} />
     </div>
   );
 }
