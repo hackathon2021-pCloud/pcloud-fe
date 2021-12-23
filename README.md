@@ -13,11 +13,7 @@ APIs are severless functions deployed on AWS
 
 using redis as database, hosted by [upstash](https://console.upstash.com/redis/d67541bf-3904-488d-a612-6ecf5393891e), max 10K commands per day
 
-logo:
-
 <img src="./public/logo-v1-bg.svg" width="200" />
-
-[figma](https://www.figma.com/file/53v3WCZ10TEAEPydGGHFKe/Untitled?node-id=0%3A1)
 
 ## development
 
