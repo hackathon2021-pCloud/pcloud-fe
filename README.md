@@ -3,7 +3,7 @@
 ## basic info
 
 - [Home Page](https://pcloud-fe.vercel.app/)
-- [RFC: pCloud User flow](https://docs.google.com/document/d/1adgqQrHebADybfvWuWP-lF5dywtSPAaNBcpyeTXAq5w/edit#)
+- [pCloud FE User flow design](https://docs.google.com/document/d/1adgqQrHebADybfvWuWP-lF5dywtSPAaNBcpyeTXAq5w/edit#)
 - [Deployment History](https://vercel.com/pcloud-fe/pcloud-fe/deployments)
 - [API Logs](https://vercel.com/pcloud-fe/pcloud-fe/DLjxmfREGcDWfHs2d3qs9gSpVcPJ/functions?name=api%2Fdate.go)
 
@@ -17,5 +17,5 @@ using redis as database, hosted by [upstash](https://console.upstash.com/redis/d
 
 ## development
 
-1. to add new APIs, create file under `./pages/api` folder; For example, `./pages/api/date.js` will be handling request to `https://pcloud-fe.vercel.app/api/date`; if need to use other languages (Go, Python and Ruby), see [pcloud-be](https://github.com/wanghaoPolar/pcloud-be/tree/main)
+1. to add new APIs, create file under `./pages/api` folder; For example, `./pages/api/date.js` will be handling request to `https://pcloud-fe.vercel.app/api/date`
 2. to deploy new changes, push the commit to `main` branch, the deployment will start automatically and finish in minutes
