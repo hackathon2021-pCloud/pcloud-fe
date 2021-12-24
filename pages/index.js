@@ -1,30 +1,41 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import { useEffect, useState } from "react";
+import Head from "next/head";
+import Image from "next/image";
+import styles from "../styles/Home.module.css";
 import Link from "next/link";
 import { useUser } from "@auth0/nextjs-auth0";
 import Avatar from "../components/Avatar";
-import PCloud from '../components/PCloud';
-import Logo from '../components/Logo';
-import { useEffect } from 'react';
+import PCloud from "../components/PCloud";
+import Logo from "../components/Logo";
+import Loader from "../components/Loader";
 
 export default function Home() {
   const { user, error, isLoading } = useUser();
+  const [isOpeningAuthPage, setIsOpeningAuthPage] = useState(false);
 
   useEffect(() => {
     if (error) {
-      window.alert(error)
+      window.alert(error);
     }
-  }, [error])
+  }, [error]);
 
-  let userElement = null
+  let userElement = null;
   if (user) {
     userElement = <Avatar user={user} />;
-  } else if (isLoading) {
-    userElement = 'loading...'
+  } else if (isLoading || isOpeningAuthPage) {
+    userElement = <Loader size="small" />;
   } else {
-    // eslint-disable-next-line
-    userElement = <a href="/api/auth/login">Login</a>;
+    userElement = (
+      // eslint-disable-next-line
+      <a
+        onClick={() => {
+          setIsOpeningAuthPage(true);
+        }}
+        href="/api/auth/login"
+      >
+        Login
+      </a>
+    );
   }
 
   return (
@@ -39,41 +50,6 @@ export default function Home() {
         <div className={styles.youandme}>
           <Logo /> + <div className={styles.userHolder}>{userElement}</div>
         </div>
-        {/* <ul>
-          <li>
-            <Link href="/api/hello">
-              <a target="_blank" rel="noreferrer">
-                example of NodeJS API (data fetched from redis)
-              </a>
-            </Link>{" "}
-            (
-            <Link href="https://github.com/wanghaoPolar/pcloud-fe/blob/main/pages/api/hello.js">
-              <a target="_blank" rel="noreferrer">
-                source
-              </a>
-            </Link>
-            )
-          </li>
-          <li>
-            <Link href="/api/date">
-              <a target="_blank" rel="noreferrer">
-                example of Go API
-              </a>
-            </Link>{" "}
-            (
-            <Link href="https://github.com/wanghaoPolar/pcloud-fe/blob/main/api/date.go">
-              <a target="_blank" rel="noreferrer">
-                source
-              </a>
-            </Link>
-            )
-          </li>
-          <li>
-            <Link href="/api/auth/logout">
-              <a>Logout</a>
-            </Link>
-          </li>
-        </ul> */}
       </main>
     </div>
   );

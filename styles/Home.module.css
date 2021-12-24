@@ -129,11 +129,12 @@
   justify-content: space-between;
 }
 
-
 .youandme img {
   margin-right: -8px;
 }
 
 .userHolder {
   width: 50px;
+  display: flex;
+  justify-content: center;
 }
