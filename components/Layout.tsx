@@ -10,7 +10,11 @@ import {
   FileOutlined,
   TeamOutlined,
   UserOutlined,
+  DashboardOutlined,
+  DatabaseOutlined,
 } from "@ant-design/icons";
+import DashboardIcon from "./Icons/Dashboard";
+import ClusterIcon from "./Icons/Cluster";
 import * as style from './Layout.module.css'
 import Avatar from "./Avatar";
 import useSWR, { SWRConfig } from "swr";
@@ -88,14 +92,14 @@ export default function BasicLayout({
           >
             <Menu.Item
               key="/"
-              icon={<PieChartOutlined />}
+              icon={<DashboardOutlined />}
               className={cx("textMedium13", style.menuItem)}
             >
               Dashboard
             </Menu.Item>
             <Menu.Item
               key="/cluster"
-              icon={<DesktopOutlined />}
+              icon={<DatabaseOutlined />}
               className={cx("textMedium13", style.menuItem)}
             >
               Clusters
@@ -105,9 +109,9 @@ export default function BasicLayout({
         <Layout className="site-layout">
           <Header style={{ padding: 0, height: 60 }} className={style.header} />
           <Content style={{ padding: "36px 50px" }}>{children}</Content>
-          <Footer style={{ textAlign: "center" }}>
-            Ant Design ©2018 Created by Ant UED
-          </Footer>
+          {/* <Footer style={{ textAlign: "center" }}>
+            pCloud 2022
+          </Footer> */}
         </Layout>
       </Layout>
     </SWRConfig>

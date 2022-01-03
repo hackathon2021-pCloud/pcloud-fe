@@ -3,7 +3,7 @@
 }
 
 .loadingOverlay {
-  background-color: rgba(0, 0, 0, 0.205);
+  z-index: 1;
   position: absolute;
   top: 0;
   right: 0;
@@ -13,3 +13,8 @@
   align-items: center;
   justify-content: center;
 }
+
+/* .buttonWrapper {
+  display: flex;
+  flex-direction: column;
+} */

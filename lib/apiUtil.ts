@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { DBError } from "../types";
+import { ClusterInfo, DBError } from "../types";
 
 export const getRequestBody = (
   req: NextApiRequest,
@@ -24,7 +24,7 @@ export const getRequestQuery = <T>(
     return null;
   }
   const result = {};
-  for (let k of requiredKeys) {
+  for (let k of Object.keys(query)) {
     result[k] = decodeURIComponent(query[k] as string);
   }
   return result as T;
@@ -35,3 +35,7 @@ export const forbiddenRequest = (res: NextApiResponse) =>
   res.status(403).json({ msg: "forbidden" });
 export const dbError = (res: NextApiResponse, error: DBError) =>
   res.status(error.errorCode).json(error);
+export const removeCredentialsFromCluster = (cluster: ClusterInfo) => {
+  delete cluster.authKey;
+  delete cluster.owner;
+}

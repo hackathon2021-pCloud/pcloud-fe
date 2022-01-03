@@ -59,7 +59,7 @@ export default function TiupProgress({cluster}: {cluster: ClusterInfo}) {
       />
       <div className={style.tiupStatus}>
         {progress === 100 ? (
-          <Button href={`/cluster?token=${cluster.id}`} type="dashed">
+          <Button href={`/cluster?id=${cluster.id}`} type="dashed">
             Go To Cluster Detail Page
           </Button>
         ) : isFetchingTiupProgress ? (

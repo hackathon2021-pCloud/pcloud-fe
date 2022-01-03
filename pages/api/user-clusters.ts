@@ -12,11 +12,11 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "GET") {
-    const query = getRequestQuery<UserClusterRequestQuery>(req, ['userid'])
+    const query = getRequestQuery<UserClusterRequestQuery>(req, ['userId'])
     if (!query) {
       return invalidRequest(res)
     }
-    const clusterInfos = await getUserClusterList({userid: query.userid, from: 0, limit: MAX_CLUSTER_PER_USER})
+    const clusterInfos = await getUserClusterList({userid: query.userId, from: 0, limit: MAX_CLUSTER_PER_USER})
 	  return res.status(200).json({ clusterInfos } as UserClusterResponse);
   }
   return invalidRequest(res);

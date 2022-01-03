@@ -12,12 +12,11 @@ const writeFile = (state) => {
   fs.writeFileSync(STATE_FILE_PATH, JSON.stringify(state));
 };
 
-const HOST = "http://localhost:3000/"
+const HOST = "http://localhost:3000/";
 const API_PREFIX = `${HOST}api/`;
 const AUTH_KEY = "authKeyExample";
 const STEPS = [
   {
-    id: 0,
     name: "STEP 1: get register token",
     url: `${API_PREFIX}register-token`,
     fetchConfig: {
@@ -34,7 +33,6 @@ const STEPS = [
     },
   },
   {
-    id: 1,
     name: "STEP 2: get cluster info",
     url: (self, currentState) => {
       const clusterId = fs.readFileSync(
@@ -54,7 +52,6 @@ const STEPS = [
     },
   },
   {
-    id: 2,
     name: "STEP 3: TiUP setup progress (10)",
     url: `${API_PREFIX}cluster-setup-progress`,
     fetchConfig: (self, currentState) => {
@@ -64,13 +61,12 @@ const STEPS = [
           clusterId: currentState.cluster.id,
           authKey: AUTH_KEY,
           progress: 10,
-          backupUrl: 's3://backupUrl'
+          backupUrl: "s3://backupUrl",
         }),
       };
     },
   },
   {
-    id: 3,
     name: "STEP 3: TiUP setup progress (50)",
     url: `${API_PREFIX}cluster-setup-progress`,
     fetchConfig: (self, currentState) => {
@@ -86,7 +82,6 @@ const STEPS = [
     },
   },
   {
-    id: 4,
     name: "STEP 3: TiUP setup progress (100)",
     url: `${API_PREFIX}cluster-setup-progress`,
     fetchConfig: (self, currentState) => {
@@ -101,9 +96,62 @@ const STEPS = [
       };
     },
   },
+  {
+    name: "STEP 4: Append checkpoint to cluster",
+    url: `${API_PREFIX}checkpoint`,
+    fetchConfig: (self, currentState) => {
+      return {
+        method: "POST",
+        body: JSON.stringify({
+          authKey: AUTH_KEY,
+          clusterId: currentState.cluster.id,
+          uploadStatus: "ongoing",
+          uploadProgress: 10,
+          checkpointTime: Number(new Date("2022-01-03")),
+          url: "s3://checkpoint-1",
+          backupSize: 20,
+          operator: "operator",
+        }),
+      };
+    },
+    onFinish: (res, currentState) => {
+      currentState.checkpointId = res.id;
+    },
+  },
+  {
+    name: "STEP 5: Update checkpoint uploadProgress",
+    url: `${API_PREFIX}checkpoint`,
+    fetchConfig: (self, currentState) => {
+      return {
+        method: "PUT",
+        body: JSON.stringify({
+          clusterId: currentState.cluster.id,
+          id: currentState.checkpointId,
+          uploadStatus: "finish",
+          uploadProgress: 100,
+          authKey: AUTH_KEY,
+        }),
+      };
+    },
+  },
+  {
+    name: "Usage: Get info from temporary token",
+    url: () => {
+      const token = fs.readFileSync(
+        path.join(__dirname, "./temporary-token.txt"),
+        "utf-8"
+      );
+      return `${API_PREFIX}temporary-token?token=${token}`;
+    },
+    fetchConfig: (self, currentState) => {
+      return {
+        method: "GET",
+      };
+    },
+  },
 ];
 
-const currentStep = 1;
+const currentStep = 7;
 const demo = async () => {
   const currentState = readFile();
   const step = STEPS[currentStep];
@@ -116,7 +164,7 @@ const demo = async () => {
       : step.fetchConfig;
   console.log(`Request URL: ${url}`);
   console.log(`Request config: ${JSON.stringify(fetchConfig)}`);
-  const res = await fetch(url, fetchConfig).then(r => r.json());
+  const res = await fetch(url, fetchConfig).then((r) => r.json());
   console.log(`Response: ${JSON.stringify(res)}`);
   step.onFinish?.(res, currentState);
   writeFile(currentState);

@@ -28,7 +28,7 @@ export default function Syncing() {
       </div>
       <Progress
         strokeColor="#2ED47A"
-        percent={50}
+        percent={70}
         status="active"
         showInfo={false}
       />

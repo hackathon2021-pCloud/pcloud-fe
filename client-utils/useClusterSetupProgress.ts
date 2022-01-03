@@ -10,7 +10,7 @@ export default function useClusterSetupProgress({ clusterId, userId }: ClusterSe
       clusterId
     )}&userId=${encodeURIComponent(userId)}`,
     fetcher,
-    { refreshInterval: (lastData) => lastData.progress === 100 ? Infinity : REFRESH_INTERVAL}
+    { refreshInterval: (lastData) => lastData?.progress === 100 ? Infinity : REFRESH_INTERVAL}
   );
 
   return {

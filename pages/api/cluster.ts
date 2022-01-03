@@ -11,6 +11,7 @@ import {
   dbError,
   forbiddenRequest,
   getRequestQuery,
+  removeCredentialsFromCluster,
 } from "../../lib/apiUtil";
 import {
   ClusterPostRequestBody,
@@ -50,21 +51,22 @@ export default async function handler(
       authKey,
       setupStatus: ClusterSetupStatus.registered,
     });
-    // 2.
+    const cluster = clusterResult.payload
+    removeCredentialsFromCluster(cluster)
     await removeRegisterToken(registerToken);
     return res
       .status(200)
-      .json({ cluster: clusterResult.payload } as ClusterPostResponse);
+      .json({ cluster } as ClusterPostResponse);
   }
   if (req.method === "GET") {
     const query = getRequestQuery(req, [
       "clusterId",
-      "authKey",
     ]) as ClusterGetRequestQuery;
-    if (!query) {
+    console.log({query})
+    if (!query || (!query.authKey && !query.userId)) {
       return invalidRequest(res);
     }
-    const { clusterId, authKey } = query;
+    const { clusterId, authKey, userId } = query;
     const clusterInfoResult = await ClusterInfoOperator.getJson({
       id: clusterId,
     });
@@ -72,9 +74,10 @@ export default async function handler(
       return dbError(res, clusterInfoResult);
     }
     const { payload: clusterInfo } = clusterInfoResult;
-    if (clusterInfo.authKey !== authKey) {
+    if (clusterInfo.authKey !== authKey && clusterInfo.owner !== userId) {
       return forbiddenRequest(res);
     }
+    removeCredentialsFromCluster(clusterInfo)
     return res.status(200).json({ cluster: clusterInfo } as ClusterGetResponse);
   }
   return invalidRequest(res);

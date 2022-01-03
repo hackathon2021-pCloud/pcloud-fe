@@ -1,7 +1,10 @@
 import { Progress, Table } from "antd";
+import { useUser } from "@auth0/nextjs-auth0";
+import useClusterCheckpoints from "../../client-utils/useClusterCheckpoints";
 import { ClusterInfo } from "../../types";
 import Loader from "../Loader";
 import ActionButton from "./ActionButton";
+import formatDate from "../../client-utils/formatDate";
 import * as style from './CheckpointList.module.css';
 
 interface ClusterCheckPoint {
@@ -15,7 +18,10 @@ interface ClusterCheckPoint {
 }
 
 export default function CheckpointList({ cluster }: { cluster: ClusterInfo }) {
-  const checkpoints: ClusterCheckPoint[] = [];
+  const {user} = useUser();
+  console.log("CheckpointList");
+  console.log({cluster})
+  const checkpointListSwr = useClusterCheckpoints({userId: user.sub, clusterId: cluster.id})
   const columns = [
     {
       title: "Cluster ID",
@@ -26,18 +32,20 @@ export default function CheckpointList({ cluster }: { cluster: ClusterInfo }) {
       title: "Checkpoint Time",
       dataIndex: "checkpointTime",
       key: "checkpointTime",
+      render: (time) => formatDate(time),
     },
     {
       title: "Operator",
       dataIndex: "operator",
       key: "operator",
+      render: (value) => value || "unknown",
     },
     {
       title: "Upload Progress",
-      key: "uploadStatus",
-      dataIndex: "uploadStatus",
-      render: (uploadStatus, row) => {
-        if (uploadStatus === "ongoing") {
+      key: "uploadProgress",
+      dataIndex: "uploadProgress",
+      render: (uploadProgress, row) => {
+        if (uploadProgress < 100) {
           return <Progress percent={row.uploadProgress} status="active" />;
         }
         return "Finished";
@@ -47,43 +55,30 @@ export default function CheckpointList({ cluster }: { cluster: ClusterInfo }) {
       title: "Action",
       key: "action",
       render: (text, row) => (
-        <div>
-          <ActionButton tokenType="checkpoint" checkPoint={row} />
-          <ActionButton tokenType="replication" checkPoint={row} />
+        <div className={style.buttonWrapper}>
+          <ActionButton
+            key="checkpoint"
+            tokenType="checkpoint"
+            checkPoint={row}
+          />
+          <ActionButton
+            key="replication"
+            tokenType="replication"
+            checkPoint={row}
+          />
         </div>
       ),
     },
   ];
-  const data = [
-    {
-      clusterId: "bkKgeKNG",
-      uploadStatus: "ongoing",
-      uploadProgress: 50,
-      checkpointTime: Number(new Date("2022-01-02")),
-      url: "/abc",
-      backupSize: 123,
-      operator: "root",
-    },
-    {
-      clusterId: "bkKgeKNG",
-      uploadStatus: "finished",
-      uploadProgress: 100,
-      checkpointTime: Number(new Date("2022-01-01")),
-      url: "/abc",
-      backupSize: 123,
-      operator: "root",
-    },
-  ];
 
-  const isLoading = true;
   return (
     <div className={style.wrapper}>
-      {isLoading && (
+      {checkpointListSwr.isLoading && (
         <div className={style.loadingOverlay}>
           <Loader />
         </div>
       )}
-      <Table className={style.table} columns={columns} dataSource={data} />
+      <Table rowKey={"id"} className={style.table} columns={columns} dataSource={checkpointListSwr.data?.checkpoints || []} />
     </div>
   );
 }

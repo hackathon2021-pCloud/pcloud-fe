@@ -1,10 +1,14 @@
 import { Fragment } from "react";
+import { useRouter } from "next/router";
+import { useUser } from "@auth0/nextjs-auth0";
 import { ClusterInfo, ClusterSetupStatus, StorageProvider } from "../../types";
 import Layout from "../Layout";
 import Card from "../Card";
 import Input from "../Input";
 import * as style from './index.module.css';
 import CheckpointList from "./CheckpointList";
+import useCluster from "../../client-utils/useCluster";
+import Loader from "../Loader";
 
 const BASIC_INFO = [
   { label: "Create Time", key: "createTime" },
@@ -12,7 +16,6 @@ const BASIC_INFO = [
   { label: "ID", key: "id" },
   { label: "Setup Status", key: "setupStatus" },
   { label: "Storage Provider", key: "storageProvider" },
-  { label: "Owner", key: "owner" },
 ];
 
 /**
@@ -28,15 +31,23 @@ export interface ClusterInfo extends BasicJsonModel {
  */
 
 export default function Cluster() {
-  const cluster: ClusterInfo = {
-    name: "Cluster 1",
-    createTime: Number(new Date("2022-01-02")),
-    laskCheckpointTime: Number(new Date("2022-01-02")),
-    id: "JKFENQWIG",
-    setupStatus: ClusterSetupStatus.finish,
-    storageProvider: StorageProvider.aws,
-    owner: "github|2342341"
-  };
+  const {user} = useUser()
+  const router = useRouter();
+  const { id } = router.query;
+  const clusterSwr = useCluster({userId: user.sub, clusterId: id as string})
+
+  if (!clusterSwr.data?.cluster) {
+    return (
+      <div className={style.loadingOverlay}>
+        <Loader />
+      </div>
+    );
+  }
+
+  const cluster = clusterSwr.data.cluster
+
+  console.log(clusterSwr)
+
   return (
     <Layout>
       <Fragment>
@@ -58,7 +69,7 @@ export default function Cluster() {
             </ul>
           </Fragment>
         </Card>
-        <CheckpointList />
+        <CheckpointList cluster={cluster} />
       </Fragment>
     </Layout>
   );

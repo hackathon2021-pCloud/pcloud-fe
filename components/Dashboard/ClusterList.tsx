@@ -1,35 +1,31 @@
 import { Button } from "antd";
 import { Fragment } from "react";
-import cx from 'classnames'
+import cx from "classnames";
 import useSWRInfinite from "swr/infinite";
-import Link from 'next/link'
+import Link from "next/link";
 import { ClusterInfo } from "../../types";
 import Card from "../Card";
 import * as style from "./ClusterList.module.css";
-import format from 'date-fns/format'
-
-const formatDate = (timestamp: number) => {
-  return format(timestamp, "MMMM dd yyyy");
-}
+import formatDate from "../../client-utils/formatDate";
+import useUserClusters from "../../client-utils/useUserClusters";
+import { useUser } from "@auth0/nextjs-auth0";
+import Loader from "../Loader";
 
 export default function ClusterList() {
-  const clusters: ClusterInfo[] = [
-    {
-      id: "abc",
-      name: "Cluster 1",
-      createTime: Number(new Date("2022-01-01")),
-      laskCheckpointTime: Number(new Date("2022-01-02")),
-    },
-    {
-      id: "abc1",
-      name: "Cluster 2",
-      createTime: Number(new Date("2022-01-01")),
-      laskCheckpointTime: Number(new Date("2022-01-02")),
-    },
-  ];
+  const { user } = useUser();
+  const userClusterSwr = useUserClusters(user.sub);
+
+  if (!userClusterSwr.data?.clusterInfos?.length) {
+    return (
+      <Card className={cx(userClusterSwr.isLoading && style.loadingWrapper, "textMedium15")}>
+        {userClusterSwr.isLoading ? <Loader size="small" /> : "No Cluster Registered"}
+      </Card>
+    );
+  }
+
   return (
     <ul>
-      {clusters.map((clt, index) => (
+      {userClusterSwr.data?.clusterInfos.map((clt, index) => (
         <li key={index}>
           <Link href={`/cluster?id=${encodeURIComponent(clt.id)}`}>
             <a>

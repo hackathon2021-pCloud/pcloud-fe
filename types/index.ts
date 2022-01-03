@@ -55,7 +55,7 @@ export type User = {
 }
 
 export type UserClusterRequestQuery = {
-  userid: string;
+  userId: string;
   from?: number;
   limit?: number;
 };
@@ -73,7 +73,8 @@ export type ClusterPostResponse = {
 }
 export type ClusterGetRequestQuery = {
   clusterId: string,
-  authKey: string,
+  authKey?: string,
+  userId?: string,
 };
 export type ClusterGetResponse = {
   cluster: ClusterInfo;
@@ -100,6 +101,14 @@ export type ClusterSetupProgressGetResponse = {
 
 export type CheckpointPostRequestBody = ClusterCheckPoint & {authKey: string};
 export type CheckpointPostResponse = {id: string};
+export type CheckpointPutRequestBody = {
+  clusterId: string;
+  id: string;
+  uploadStatus: "ongoing" | "finished";
+  uploadProgress: number;
+  authKey: string;
+};
+export type CheckpointPutResponse = {  };
 
 export type CheckpointGetRequestQuery = {
   clusterId: string,
@@ -112,7 +121,7 @@ export type CheckpointGetResponse = {
 export type TemporaryTokenPostRequestBody = {
   type: 'checkpoint' | 'replication',
   checkpointId: string,
-  userid: string,
+  userId: string,
 }
 export type TemporaryTokenPostResponse = {
   token: string,

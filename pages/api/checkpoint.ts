@@ -3,7 +3,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import {
   ClusterCheckpointOperator,
   ClusterInfoOperator,
-  createRegisterToken,
   getCheckpointsOfCluster,
 } from "../../lib/db";
 import {
@@ -18,21 +17,38 @@ import {
   CheckpointGetResponse,
   CheckpointPostRequestBody,
   CheckpointPostResponse,
+  CheckpointPutRequestBody,
+  CheckpointPutResponse,
 } from "../../types";
-/**
- * 
-  clusterId: string;
-  uploadStatus: "ongoing" | "finished";
-  uploadProgress: number;
-  checkpointTime: number;
-  url: string;
-  backupSize: number;
-  operator?: string;
- */
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (req.method === "PUT") {
+    const body = getRequestBody(req, [
+      "id",
+      "clusterId",
+      "uploadProgress",
+      "authKey",
+    ]) as CheckpointPutRequestBody;
+    if (!body) {
+      return invalidRequest(res);
+    }
+    const { clusterId, authKey, uploadProgress, id } = body;
+    const clusterResult = await ClusterInfoOperator.getJson({
+      id: clusterId,
+    });
+    if ("errorCode" in clusterResult) {
+      return dbError(res, clusterResult);
+    }
+    const { payload: cluster } = clusterResult;
+    if (cluster.authKey !== authKey) {
+      return forbiddenRequest(res);
+    }
+    await ClusterCheckpointOperator.updateJson({id, updateInfo: {uploadProgress}})
+    return res.status(200).json({} as CheckpointPutResponse)
+  }
   // add new Checkpoints to cluster
   if (req.method === "POST") {
     const body = getRequestBody(req, [
@@ -83,9 +99,9 @@ export default async function handler(
       "userId",
     ]) as CheckpointGetRequestQuery;
     if (!query) {
-	    return invalidRequest(res);
+      return invalidRequest(res);
     }
-    const {clusterId, userId} = query;
+    const { clusterId, userId } = query;
     const clusterResult = await ClusterInfoOperator.getJson({ id: clusterId });
     if ("errorCode" in clusterResult) {
       return dbError(res, clusterResult);
@@ -94,8 +110,14 @@ export default async function handler(
     if (cluster.owner !== userId) {
       return forbiddenRequest(res);
     }
-    const result = await getCheckpointsOfCluster({clusterId: cluster.id, from: 0, limit: 50});
-    return res.status(200).json({checkpoints: result} as CheckpointGetResponse)
+    const result = await getCheckpointsOfCluster({
+      clusterId: cluster.id,
+      from: 0,
+      limit: 50,
+    });
+    return res
+      .status(200)
+      .json({ checkpoints: result } as CheckpointGetResponse);
   }
   return invalidRequest(res);
 }

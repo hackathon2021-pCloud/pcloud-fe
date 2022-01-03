@@ -1,0 +1,13 @@
+.modalTitle {
+  color: var(--pcloud-table-black);
+  font-weight: normal;
+}
+
+.token {
+  font-size: 20px;
+  margin: 0;
+}
+
+.button + .button {
+	margin-left: 10px;
+}
