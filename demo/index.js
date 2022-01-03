@@ -13,6 +13,7 @@ const writeFile = (state) => {
 };
 
 const HOST = "https://pcloud-fe.vercel.app/";
+// const HOST = "http://localhost:3000/";
 const API_PREFIX = `${HOST}api/`;
 const AUTH_KEY = "authKeyExample";
 const STEPS = [
@@ -151,9 +152,9 @@ const STEPS = [
   },
 ];
 
-const currentStep = 7;
 const demo = async () => {
   const currentState = readFile();
+  const { currentStep = 0 } = currentState;
   const step = STEPS[currentStep];
   console.log(step.name);
   const url =
@@ -167,11 +168,12 @@ const demo = async () => {
   const res = await fetch(url, fetchConfig).then((r) => r.json());
   console.log(`Response: ${JSON.stringify(res)}`);
   step.onFinish?.(res, currentState);
-  writeFile(currentState);
   if (STEPS[currentStep + 1]) {
-    const nextStep = currentStep + 1;
+    const nextStep = STEPS[currentStep + 1];
+    currentState.currentStep = currentStep + 1;
     console.log(`Next: ${nextStep.name}`);
   }
+  writeFile(currentState);
 };
 
 demo();

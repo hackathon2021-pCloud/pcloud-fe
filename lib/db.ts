@@ -92,7 +92,7 @@ class HashMapOperator<T extends BasicJsonModel> {
     };
     await redis.hmset(toRedisKey(this.name, id), json);
     if (this.hooks.onInsert) {
-      this.hooks.onInsert(json);
+      await this.hooks.onInsert(json);
     }
     return successResponse(json);
   };
@@ -104,7 +104,7 @@ class HashMapOperator<T extends BasicJsonModel> {
     }
     const result = this.transformHgetallResult(jsonRecord);
     if (this.hooks.onGet) {
-      this.hooks.onInsert(result);
+      await this.hooks.onGet(result);
     }
     return successResponse(result);
   };
@@ -127,7 +127,7 @@ class HashMapOperator<T extends BasicJsonModel> {
     };
     const res = await redis.hmset(toRedisKey(this.name, id), updated);
     if (this.hooks.onUpdate) {
-      this.hooks.onUpdate(current.payload, updated);
+      await this.hooks.onUpdate(current.payload, updated);
     }
     return successResponse(res);
   };
@@ -298,13 +298,9 @@ export const getCheckpointsOfCluster = async ({
   return result;
 };
 
-export const createTemporaryToken = async ({
-  info,
-}: {
-  info: string;
-}) => {
+export const createTemporaryToken = async ({ info }: { info: string }) => {
   const token = await uniqueID();
-  await redis.set(toRedisKey(RedisKeyPrefix.temporaryToken, token), info)
+  await redis.set(toRedisKey(RedisKeyPrefix.temporaryToken, token), info);
   return token;
 };
 export const getInfoFromTemporaryToken = async ({
@@ -312,11 +308,11 @@ export const getInfoFromTemporaryToken = async ({
 }: {
   token: string;
 }) => {
-  return await redis.get(toRedisKey(RedisKeyPrefix.temporaryToken, token))
+  return await redis.get(toRedisKey(RedisKeyPrefix.temporaryToken, token));
 };
-export const removeTemporaryToken = async ({token}) => {
+export const removeTemporaryToken = async ({ token }) => {
   return await redis.del(toRedisKey(RedisKeyPrefix.temporaryToken, token));
-}
+};
 
 export const getClusterSetupProgress = async ({
   clusterId,
