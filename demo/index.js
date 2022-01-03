@@ -12,32 +12,98 @@ const writeFile = (state) => {
   fs.writeFileSync(STATE_FILE_PATH, JSON.stringify(state));
 };
 
-const API_PREFIX = "http://localhost:3000/api/";
+const HOST = "http://localhost:3000/"
+const API_PREFIX = `${HOST}api/`;
 const AUTH_KEY = "authKeyExample";
 const STEPS = [
   {
     id: 0,
-    name: "get register token",
+    name: "STEP 1: get register token",
     url: `${API_PREFIX}register-token`,
     fetchConfig: {
       method: "POST",
       body: JSON.stringify({ authKey: "authKeyExample" }),
     },
+    onFinish: (res, currentState) => {
+      currentState.registerToken = res.registerToken;
+      console.log(
+        `open URL: ${HOST}register?register_token=${encodeURIComponent(
+          res.registerToken
+        )}`
+      );
+    },
   },
   {
     id: 1,
-    name: "get cluster info",
-    url: (self, currentState) =>
-      `${API_PREFIX}cluster-info?register_token=${currentState[0].res.registerToken}&auth_key=${AUTH_KEY}`,
+    name: "STEP 2: get cluster info",
+    url: (self, currentState) => {
+      const clusterId = fs.readFileSync(
+        path.join(__dirname, "./cluster-id.txt"),
+        "utf-8"
+      );
+      console.log(clusterId);
+      return `${API_PREFIX}cluster?authKey=${AUTH_KEY}&clusterId=${clusterId}`;
+    },
     fetchConfig: (self, currentState) => {
       return {
         method: "GET",
       };
     },
+    onFinish: (res, currentState) => {
+      currentState.cluster = res.cluster;
+    },
+  },
+  {
+    id: 2,
+    name: "STEP 3: TiUP setup progress (10)",
+    url: `${API_PREFIX}cluster-setup-progress`,
+    fetchConfig: (self, currentState) => {
+      return {
+        method: "POST",
+        body: JSON.stringify({
+          clusterId: currentState.cluster.id,
+          authKey: AUTH_KEY,
+          progress: 10,
+          backupUrl: 's3://backupUrl'
+        }),
+      };
+    },
+  },
+  {
+    id: 3,
+    name: "STEP 3: TiUP setup progress (50)",
+    url: `${API_PREFIX}cluster-setup-progress`,
+    fetchConfig: (self, currentState) => {
+      return {
+        method: "POST",
+        body: JSON.stringify({
+          clusterId: currentState.cluster.id,
+          authKey: AUTH_KEY,
+          progress: 50,
+          backupUrl: "s3://backupUrl",
+        }),
+      };
+    },
+  },
+  {
+    id: 4,
+    name: "STEP 3: TiUP setup progress (100)",
+    url: `${API_PREFIX}cluster-setup-progress`,
+    fetchConfig: (self, currentState) => {
+      return {
+        method: "POST",
+        body: JSON.stringify({
+          clusterId: currentState.cluster.id,
+          authKey: AUTH_KEY,
+          progress: 100,
+          backupUrl: "s3://backupUrl",
+        }),
+      };
+    },
   },
 ];
 
-const currentStep = 0;
+const currentStep = 1;
 const demo = async () => {
   const currentState = readFile();
   const step = STEPS[currentStep];
@@ -50,9 +116,9 @@ const demo = async () => {
       : step.fetchConfig;
   console.log(`Request URL: ${url}`);
   console.log(`Request config: ${JSON.stringify(fetchConfig)}`);
-  const res = await fetch(url, fetchConfig).then(r => r.text());
-  console.log(`Response: ${res}`);
-  currentState[step.id] = {res};
+  const res = await fetch(url, fetchConfig).then(r => r.json());
+  console.log(`Response: ${JSON.stringify(res)}`);
+  step.onFinish?.(res, currentState);
   writeFile(currentState);
   if (STEPS[currentStep + 1]) {
     const nextStep = currentStep + 1;

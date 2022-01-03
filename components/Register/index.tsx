@@ -60,16 +60,16 @@ export default function Register() {
   const router = useRouter();
   const [clusterName, setClusterName] = useState<string>("");
   const [selectedSp, setSelectedSp] = useState<string>("");
-  const [currentStep, setCurrentStep] = useState(2);
-  const [createdCluster, setCreatedCluster] = useState<ClusterInfo | undefined>(
-    {
-      authKey: "authKeyExample",
-      createTime: 1641184362792,
-      id: "QInAyhlRCOLPFfh4",
-      name: "Cluster 2",
-      owner: "github|16663610",
-      storageProvider: StorageProviderEnum.aws,
-    }
+  const [currentStep, setCurrentStep] = useState(0);
+  const [createdCluster, setCreatedCluster] = useState<ClusterInfo | undefined>(undefined
+    // {
+    //   authKey: "authKeyExample",
+    //   createTime: 1641184362792,
+    //   id: "QInAyhlRCOLPFfh4",
+    //   name: "Cluster 2",
+    //   owner: "github|16663610",
+    //   storageProvider: StorageProviderEnum.aws,
+    // }
   );
   const { user } = useUser();
   const userClusterSwr = useUserCluster(user.sub);

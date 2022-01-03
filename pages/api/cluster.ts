@@ -5,7 +5,13 @@ import {
   getAuthKeyOfRegisterToken,
   removeRegisterToken,
 } from "../../lib/db";
-import { invalidRequest, getRequestBody, dbError, forbiddenRequest } from "../../lib/apiUtil";
+import {
+  invalidRequest,
+  getRequestBody,
+  dbError,
+  forbiddenRequest,
+  getRequestQuery,
+} from "../../lib/apiUtil";
 import {
   ClusterPostRequestBody,
   ClusterPostResponse,
@@ -19,9 +25,13 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const body = getRequestBody(req) as ClusterPostRequestBody;
-    const required = ["registerToken", "name", "storageProvider", "owner"];
-    if (!body || required.some((key) => !body[key])) {
+    const body = getRequestBody(req, [
+      "registerToken",
+      "name",
+      "storageProvider",
+      "owner",
+    ]) as ClusterPostRequestBody;
+    if (!body) {
       return invalidRequest(res);
     }
     const registerToken = body.registerToken;
@@ -46,17 +56,26 @@ export default async function handler(
       .status(200)
       .json({ cluster: clusterResult.payload } as ClusterPostResponse);
   }
-  if (req.method === 'GET') {
-	const {clusterId, authToken} = req.query as ClusterGetRequestQuery;
-	const clusterInfoResult = await ClusterInfoOperator.getJson({id: clusterId});
-	if ('errorCode' in clusterInfoResult) {
-		return dbError(res, clusterInfoResult)
-	}
-	const {payload: clusterInfo} = clusterInfoResult
-	if (clusterInfo.authKey !== authToken) {
-		return forbiddenRequest(res)
-	}
-	return res.status(200).json({cluster: clusterInfo} as ClusterGetResponse)
+  if (req.method === "GET") {
+    const query = getRequestQuery(req, [
+      "clusterId",
+      "authKey",
+    ]) as ClusterGetRequestQuery;
+    if (!query) {
+      return invalidRequest(res);
+    }
+    const { clusterId, authKey } = query;
+    const clusterInfoResult = await ClusterInfoOperator.getJson({
+      id: clusterId,
+    });
+    if ("errorCode" in clusterInfoResult) {
+      return dbError(res, clusterInfoResult);
+    }
+    const { payload: clusterInfo } = clusterInfoResult;
+    if (clusterInfo.authKey !== authKey) {
+      return forbiddenRequest(res);
+    }
+    return res.status(200).json({ cluster: clusterInfo } as ClusterGetResponse);
   }
   return invalidRequest(res);
 }

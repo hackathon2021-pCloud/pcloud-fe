@@ -13,6 +13,7 @@ import {
 } from "@ant-design/icons";
 import * as style from './Layout.module.css'
 import Avatar from "./Avatar";
+import useSWR, { SWRConfig } from "swr";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -31,73 +32,84 @@ export default function BasicLayout({
   }
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
-      <Sider
-        collapsible
-        collapsed={collapsed}
-        onCollapse={(nextValue) => {
-          setCollapsed(nextValue);
-        }}
-        theme="light"
-        className={cx(
-          style.sider,
-          collapsed ? style.collapsedSider : style.fullSider
-        )}
-        width={256}
-        collapsedWidth={94}
-      >
-        <div className={style.logo}>pCloud</div>
-        <div className={style.user}>
-          <Avatar user={user} shadow={false} className={style.avatar} />
-          <div>
-            <p
-              className={cx(
-                "textMedium14Black",
-                style.name,
-                collapsed && style.hide
-              )}
-            >
-              {user.name}
-            </p>
-            <p
-              className={cx(
-                "textMedium11Gray",
-                style.email,
-                collapsed && style.hide
-              )}
-            >
-              {user.email}
-            </p>
+    <SWRConfig
+      value={{
+        provider: () => new Map(),
+        fetcher: (resource, init) =>
+          fetch(resource, init).then((res) => res.json()),
+        revalidateOnFocus: false,
+      }}
+    >
+      <Layout style={{ minHeight: "100vh" }}>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(nextValue) => {
+            setCollapsed(nextValue);
+          }}
+          theme="light"
+          className={cx(
+            style.sider,
+            collapsed ? style.collapsedSider : style.fullSider
+          )}
+          width={256}
+          collapsedWidth={94}
+        >
+          <div className={style.logo}>pCloud</div>
+          <div className={style.user}>
+            <Avatar user={user} shadow={false} className={style.avatar} />
+            <div>
+              <p
+                className={cx(
+                  "textMedium14Black",
+                  style.name,
+                  collapsed && style.hide
+                )}
+              >
+                {user.name}
+              </p>
+              <p
+                className={cx(
+                  "textMedium11Gray",
+                  style.email,
+                  collapsed && style.hide
+                )}
+              >
+                {user.email}
+              </p>
+            </div>
           </div>
-        </div>
-        <Menu theme="light" selectedKeys={[router.pathname]} onSelect={(info) => {
-          router.push(info.key)
-        }} >
-          <Menu.Item
-            key="/dashboard"
-            icon={<PieChartOutlined />}
-            className={cx("textMedium13", style.menuItem)}
+          <Menu
+            theme="light"
+            selectedKeys={[router.pathname]}
+            onSelect={(info) => {
+              router.push(info.key);
+            }}
           >
-            Dashboard
-          </Menu.Item>
-          <Menu.Item
-            key="/clusters"
-            icon={<DesktopOutlined />}
-            className={cx("textMedium13", style.menuItem)}
-          >
-            Clusters
-          </Menu.Item>
-        </Menu>
-      </Sider>
-      <Layout className="site-layout">
-        <Header style={{ padding: 0, height: 60 }} className={style.header} />
-        <Content style={{ padding: "36px 50px" }}>
-          {children}
-        </Content>
-        <Footer style={{ textAlign: "center" }}>
-          Ant Design ©2018 Created by Ant UED
-        </Footer>
+            <Menu.Item
+              key="/"
+              icon={<PieChartOutlined />}
+              className={cx("textMedium13", style.menuItem)}
+            >
+              Dashboard
+            </Menu.Item>
+            <Menu.Item
+              key="/cluster"
+              icon={<DesktopOutlined />}
+              className={cx("textMedium13", style.menuItem)}
+            >
+              Clusters
+            </Menu.Item>
+          </Menu>
+        </Sider>
+        <Layout className="site-layout">
+          <Header style={{ padding: 0, height: 60 }} className={style.header} />
+          <Content style={{ padding: "36px 50px" }}>{children}</Content>
+          <Footer style={{ textAlign: "center" }}>
+            Ant Design ©2018 Created by Ant UED
+          </Footer>
+        </Layout>
       </Layout>
-    </Layout>
+    </SWRConfig>
   );
 }

@@ -1,0 +1,44 @@
+.backupTitle {
+	font-weight: 500;
+font-size: 15px;
+line-height: 22px;
+
+/* black */
+
+color: #192A3E;
+margin: 0;
+padding: 0;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.selectWrapper {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  line-height: 18px;
+  color: #6a707e;
+      margin-right: -10px;
+}
+
+.select :global(.ant-select-selector) {
+  border: none !important;
+  height: 20px;
+}
+
+.select:global(.ant-select) {
+	height: 20px;
+}
+
+.select :global(.ant-select-selection-item) {
+	line-height: 20px !important;
+}
+
+.select :global(.ant-select-selection-item) {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--pcloud-accent-blue);
+}

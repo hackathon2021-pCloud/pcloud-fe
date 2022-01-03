@@ -11,6 +11,8 @@ export enum RedisKeyPrefix {
   clusterToUser = "cltousr",
   userClusterSortedSet = "userClusterSortedSet",
   temporaryCheckpointToken = "temporaryCheckpointToken",
+  clusterSetupProgress = "clstpg",
+  temporaryToken = "temporaryToken",
 }
 
 export enum StorageProvider {
@@ -28,6 +30,7 @@ export interface ClusterInfo extends BasicJsonModel {
   storageProvider: StorageProvider;
   authKey: string;
   backupSize?: number;
+  backupUrl?: string;
   owner: string;
 }
 export type BasicJsonModel = {
@@ -41,8 +44,7 @@ export interface ClusterCheckPoint extends BasicJsonModel {
   checkpointTime: number;
   url: string;
   backupSize: number;
-  operator: string;
-  operatorAvatar: string;
+  operator?: string;
 }
 export interface TemporaryCheckpointToken extends BasicJsonModel {
   checkpointId: string;
@@ -53,7 +55,9 @@ export type User = {
 }
 
 export type UserClusterRequestQuery = {
-user_id: string;
+  userid: string;
+  from?: number;
+  limit?: number;
 };
 export type UserClusterResponse = {
   clusterInfos: ClusterInfo[];
@@ -69,7 +73,7 @@ export type ClusterPostResponse = {
 }
 export type ClusterGetRequestQuery = {
   clusterId: string,
-  authToken: string,
+  authKey: string,
 };
 export type ClusterGetResponse = {
   cluster: ClusterInfo;
@@ -80,15 +84,42 @@ export type DBError = {
 }
 export type ClusterSetupProgressPostRequestBody = {
   clusterId: string,
-  authToken: string,
+  backupUrl: string,
+  authKey: string,
   progress: number,
 }
 export type ClusterSetupProgressPostResponse = {}
 export type ClusterSetupProgressGetRequestQuery = {
   clusterId: string,
-  userid: string,
+  userId: string,
 };
 export type ClusterSetupProgressGetResponse = {
   clusterId: string;
   progress: number;
 };
+
+export type CheckpointPostRequestBody = ClusterCheckPoint & {authKey: string};
+export type CheckpointPostResponse = {id: string};
+
+export type CheckpointGetRequestQuery = {
+  clusterId: string,
+  userId: string,
+}
+export type CheckpointGetResponse = {
+  checkpoints: ClusterCheckPoint[];
+}
+
+export type TemporaryTokenPostRequestBody = {
+  type: 'checkpoint' | 'replication',
+  checkpointId: string,
+  userid: string,
+}
+export type TemporaryTokenPostResponse = {
+  token: string,
+}
+export type TemporaryTokenGetRequestQuery = {
+  token: string,
+}
+export type TemporaryTokenGetResponse = {
+  result: any
+}

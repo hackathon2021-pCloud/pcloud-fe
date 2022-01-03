@@ -18,6 +18,10 @@ color: #818E9B;
 	color: var(--pcloud-accent-blue);
 }
 
+.wrapper.showing .input {
+	border-bottom: 0;
+}
+
 .input {
 	border: none;
 	font-weight: normal;
@@ -29,4 +33,9 @@ border-bottom: 1px solid var(--gray);
 padding-bottom: 6px;
 margin-top: 4px;
 outline: none;
+    padding-left: 0;
+}
+
+.input:disabled {
+	background-color: transparent;
 }

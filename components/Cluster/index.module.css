@@ -1,0 +1,13 @@
+.infoList {
+	display: flex;
+	flex-wrap: wrap;
+	margin-bottom: 0;
+}
+
+.infoItem {
+	flex-basis: 30%;
+}
+
+.infoItem:nth-child(1) {
+	margin-bottom: 10px;
+}

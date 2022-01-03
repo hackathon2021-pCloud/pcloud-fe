@@ -1,55 +1,23 @@
 import { Progress, Button, message } from "antd";
 import { Fragment, useEffect, useState } from "react";
+import useClusterSetupProgress from "../../client-utils/useClusterSetupProgress";
 import { ClusterInfo } from "../../types";
 import Loader from "../Loader";
+import { useUser } from "@auth0/nextjs-auth0";
+import copyTextToClipboard from "../../client-utils/copy";
 import * as style from './index.module.css'
 
-function fallbackCopyTextToClipboard(text: string) {
-  var textArea = document.createElement("textarea");
-  textArea.value = text;
-
-  // Avoid scrolling to bottom
-  textArea.style.top = "0";
-  textArea.style.left = "0";
-  textArea.style.position = "fixed";
-
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
-
-  try {
-    var successful = document.execCommand("copy");
-    var msg = successful ? "successful" : "unsuccessful";
-    console.log("Fallback: Copying text command was " + msg);
-  } catch (err) {
-    console.error("Fallback: Oops, unable to copy", err);
-  }
-
-  document.body.removeChild(textArea);
-}
-function copyTextToClipboard(text: string) {
-  if (!navigator.clipboard) {
-    fallbackCopyTextToClipboard(text);
-    return;
-  }
-  navigator.clipboard.writeText(text).then(
-    function () {
-      console.log("Async: Copying to clipboard was successful!");
-    },
-    function (err) {
-      console.error("Async: Could not copy text: ", err);
-    }
-  );
-}
-
 export default function TiupProgress({cluster}: {cluster: ClusterInfo}) {
-  const [tiupProgress, setTiupProgress] = useState(-1);
+  const {user} = useUser()
+  const clusterSetupProgressSwr = useClusterSetupProgress({clusterId: cluster.id, userId: user.sub})
+  // const [tiupProgress, setTiupProgress] = useState(-1);
   const isFetchingTiupProgress = false;
-  useEffect(() => {
-    window.setTiupProgress = setTiupProgress;
-  }, []);
-  if (tiupProgress === -1) {
-	  return (
+  // useEffect(() => {
+  //   window.setTiupProgress = setTiupProgress;
+  // }, []);
+  const progress = clusterSetupProgressSwr.data?.progress || -1
+  if (progress === -1) {
+    return (
       <section>
         <p className="textMedium13">
           Use below token in TiUP to continue set up
@@ -78,7 +46,7 @@ export default function TiupProgress({cluster}: {cluster: ClusterInfo}) {
           "0%": "#109CF1",
           "100%": "#334d6e",
         }}
-        percent={tiupProgress}
+        percent={progress}
         className={style.tiupProgress}
         width={200}
         format={(percent) => {
@@ -90,7 +58,7 @@ export default function TiupProgress({cluster}: {cluster: ClusterInfo}) {
         }}
       />
       <div className={style.tiupStatus}>
-        {tiupProgress === 100 ? (
+        {progress === 100 ? (
           <Button href={`/cluster?token=${cluster.id}`} type="dashed">
             Go To Cluster Detail Page
           </Button>

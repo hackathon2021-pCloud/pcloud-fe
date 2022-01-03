@@ -8,13 +8,15 @@ import {
   TemporaryCheckpointToken,
   DBError,
 } from "../types";
+import uniqueID from "./uniqueID";
 
-export const MAX_CLUSTER_PER_USER = 100
+export const MAX_CLUSTER_PER_USER = 100;
 const toRedisKey = (prefix: RedisKeyPrefix, id: string) => `${prefix}:${id}`;
-const generateError = (code: number) => (msg: string) => ({
-  errorCode: code,
-  errorMsg: msg,
-} as DBError);
+const generateError = (code: number) => (msg: string) =>
+  ({
+    errorCode: code,
+    errorMsg: msg,
+  } as DBError);
 const errorNotFound = generateError(404);
 const errorForbidden = generateError(403);
 const successResponse = <T extends unknown>(payload: T) => {
@@ -23,13 +25,19 @@ const successResponse = <T extends unknown>(payload: T) => {
   };
 };
 
-export const checkAuthKey = async ({id, authKey}: {id: string, authKey: string}) => {
+export const checkAuthKey = async ({
+  id,
+  authKey,
+}: {
+  id: string;
+  authKey: string;
+}) => {
   const actualAuthKey = await redis.get(toRedisKey(RedisKeyPrefix.authKey, id));
   if (!actualAuthKey || authKey !== actualAuthKey) {
-    return errorForbidden('forbidden')
+    return errorForbidden("forbidden");
   }
-  return successResponse('pass')
-}
+  return successResponse("pass");
+};
 
 /**
  * register token
@@ -39,15 +47,15 @@ export const checkAuthKey = async ({id, authKey}: {id: string, authKey: string})
 export const createRegisterToken = async (authKey: string) => {
   const id = await createUniqueID();
   await redis.set(toRedisKey(RedisKeyPrefix.registerToken, id), authKey);
-  return {registerToken: id};
+  return { registerToken: id };
 };
 export const removeRegisterToken = async (registerToken: string) => {
   await redis.del(toRedisKey(RedisKeyPrefix.registerToken, registerToken));
-}
+};
 export const getAuthKeyOfRegisterToken = async (registerToken: string) => {
-  const authKey = await redis.get(
+  const authKey = (await redis.get(
     toRedisKey(RedisKeyPrefix.registerToken, registerToken)
-  ) as string;
+  )) as string;
   if (!authKey) {
     return errorNotFound("no such register token");
   }
@@ -144,28 +152,47 @@ export const ClusterInfoOperator = new HashMapOperator<ClusterInfo>(
         Date.now(),
         cluster.id
       );
-      await redis.set(toRedisKey(RedisKeyPrefix.authKey, cluster.id), cluster.authKey)
+      await redis.set(
+        toRedisKey(RedisKeyPrefix.authKey, cluster.id),
+        cluster.authKey
+      );
     },
   }
 );
 
-export const getUserClusterList = async ({userid, from = 0, limit = 3}: {userid: string, from: number, limit: number}) => {
-  const clusterIds = await redis.zrevrange(toRedisKey(RedisKeyPrefix.userClusterSortedSet, userid), from, from+limit)
+export const getUserClusterList = async ({
+  userid,
+  from = 0,
+  limit = 3,
+}: {
+  userid: string;
+  from: number;
+  limit: number;
+}) => {
+  const clusterIds = await redis.zrevrange(
+    toRedisKey(RedisKeyPrefix.userClusterSortedSet, userid),
+    from,
+    from + limit
+  );
   const result: ClusterInfo[] = [];
   for (let id of clusterIds) {
-    const clusterInfo = await ClusterInfoOperator.getJson({id})
-    if ('payload' in clusterInfo) {
-      result.push(clusterInfo.payload)
+    const clusterInfo = await ClusterInfoOperator.getJson({ id });
+    if ("payload" in clusterInfo) {
+      result.push(clusterInfo.payload);
     }
   }
-  return result
-}
-export const getUserClusterListLength = async ({userid}: {userid: string}) => {
+  return result;
+};
+export const getUserClusterListLength = async ({
+  userid,
+}: {
+  userid: string;
+}) => {
   const res = await redis.zcard(
     toRedisKey(RedisKeyPrefix.userClusterSortedSet, userid)
   );
-  return res
-}
+  return res;
+};
 
 const recordToCheckpoint = (record: Record<string, string>) => {
   return {
@@ -178,33 +205,47 @@ export const ClusterCheckpointOperator = new HashMapOperator<ClusterCheckPoint>(
   recordToCheckpoint,
   {
     onInsert: async (cp) => {
-      await redis.incrby(`backupSize:${cp.clusterId}`, cp.backupSize);
-      const owner = await redis.get(
-        toRedisKey(RedisKeyPrefix.clusterToUser, cp.clusterId)
+      // checkpoint of a cluster is stored as a sorted set
+      const checkpointCount = await redis.incr(
+        toRedisKey(RedisKeyPrefix.clusterCheckpointCount, cp.clusterId)
       );
-      const streamKey = toRedisKey(
-        RedisKeyPrefix.userTotalStorageStream,
-        owner
+      await redis.zadd(
+        toRedisKey(RedisKeyPrefix.clusterCheckpointList, cp.clusterId),
+        [checkpointCount, cp.id]
       );
-      const currentSizeKey = toRedisKey(
-        RedisKeyPrefix.userTotalStorageCurrent,
-        owner
-      );
-      await redis.incrby(currentSizeKey, cp.backupSize);
-      await redis.xadd(streamKey, currentSizeKey + cp.backupSize);
-      if (cp.uploadStatus !== "finished") {
-        await redis.incr(
-          toRedisKey(RedisKeyPrefix.userCurrentSyncingCheckpointCount, owner)
-        );
-      }
+      // update cluster last checkpoint time
+      await ClusterInfoOperator.updateJson({
+        id: cp.clusterId,
+        updateInfo: { laskCheckpointTime: cp.checkpointTime },
+      });
+
+      // await redis.incrby(`backupSize:${cp.clusterId}`, cp.backupSize);
+      // const owner = await redis.get(
+      //   toRedisKey(RedisKeyPrefix.clusterToUser, cp.clusterId)
+      // );
+      // const streamKey = toRedisKey(
+      //   RedisKeyPrefix.userTotalStorageStream,
+      //   owner
+      // );
+      // const currentSizeKey = toRedisKey(
+      //   RedisKeyPrefix.userTotalStorageCurrent,
+      //   owner
+      // );
+      // await redis.incrby(currentSizeKey, cp.backupSize);
+      // await redis.xadd(streamKey, currentSizeKey + cp.backupSize);
+      // if (cp.uploadStatus !== "finished") {
+      //   await redis.incr(
+      //     toRedisKey(RedisKeyPrefix.userCurrentSyncingCheckpointCount, owner)
+      //   );
+      // }
     },
     onUpdate: async (cp) => {
-      if (cp.uploadStatus === 'finished') {
-        const owner = await redis.get(
-          toRedisKey(RedisKeyPrefix.clusterToUser, cp.clusterId)
-        );
-        await redis.decr(toRedisKey(RedisKeyPrefix.userCurrentSyncingCheckpointCount, owner))
-      }
+      // if (cp.uploadStatus === 'finished') {
+      //   const owner = await redis.get(
+      //     toRedisKey(RedisKeyPrefix.clusterToUser, cp.clusterId)
+      //   );
+      //   await redis.decr(toRedisKey(RedisKeyPrefix.userCurrentSyncingCheckpointCount, owner))
+      // }
     },
   }
 );
@@ -232,22 +273,6 @@ export const getUserTotalStorageInfo = async ({
   };
 };
 
-// checkpoints of a cluster is stored as a sorted set
-export const addCheckpointsToCluster = async ({
-  clusterId,
-  checkpointId,
-}: {
-  clusterId: string;
-  checkpointId: string;
-}) => {
-  const checkpointCount = await redis.incr(
-    toRedisKey(RedisKeyPrefix.clusterCheckpointCount, clusterId)
-  );
-  await redis.zadd(
-    toRedisKey(RedisKeyPrefix.clusterCheckpointList, clusterId),
-    [checkpointCount, checkpointId]
-  );
-};
 export const getCheckpointsOfCluster = async ({
   clusterId,
   from = 0,
@@ -262,32 +287,57 @@ export const getCheckpointsOfCluster = async ({
     from,
     from + limit
   );
-  const result = [];
+  const result: ClusterCheckPoint[] = [];
   for (let id of checkpointIds) {
-    const cp = await redis.hgetall(toRedisKey(RedisKeyPrefix.checkpoint, id));
-    result.push(recordToCheckpoint(cp));
+    // const cp = await redis.hgetall(toRedisKey(RedisKeyPrefix.checkpoint, id));
+    const cp = await ClusterCheckpointOperator.getJson({ id });
+    if ("payload" in cp) {
+      result.push(cp.payload);
+    }
   }
   return result;
 };
 
-const TemporaryCheckpointToken = new HashMapOperator<TemporaryCheckpointToken>(
-  RedisKeyPrefix.temporaryCheckpointToken,
-  (record: any) => ({...record, createTime: Number(record.createTime)}),
-  {}
-);
-export const createTemporaryCheckpointToken = async ({
-  checkpointId
+export const createTemporaryToken = async ({
+  info,
 }: {
-  checkpointId: string;
+  info: string;
 }) => {
-  return TemporaryCheckpointToken.insertJson({checkpointId})
+  const token = await uniqueID();
+  await redis.set(toRedisKey(RedisKeyPrefix.temporaryToken, token), info)
+  return token;
 };
-export const getCheckpointByTemporaryToken = async ({tokenId}: {tokenId: string}) => {
-  const jsonResult = await TemporaryCheckpointToken.getJson({id: tokenId});
-  if ("errorCode" in jsonResult) {
-    return jsonResult;
-  }
-  const token = jsonResult.payload;
-  const cpJsonResult = await ClusterCheckpointOperator.getJson({id: token.checkpointId})
-  return cpJsonResult;
+export const getInfoFromTemporaryToken = async ({
+  token,
+}: {
+  token: string;
+}) => {
+  return await redis.get(toRedisKey(RedisKeyPrefix.temporaryToken, token))
+};
+export const removeTemporaryToken = async ({token}) => {
+  return await redis.del(toRedisKey(RedisKeyPrefix.temporaryToken, token));
 }
+
+export const getClusterSetupProgress = async ({
+  clusterId,
+}: {
+  clusterId: string;
+}) => {
+  const res = await redis.get(
+    toRedisKey(RedisKeyPrefix.clusterSetupProgress, clusterId)
+  );
+  return res ? parseInt(res) : -1;
+};
+export const setClusterSetupProgress = async ({
+  clusterId,
+  progress,
+}: {
+  clusterId: string;
+  progress: number;
+}) => {
+  const res = await redis.set(
+    toRedisKey(RedisKeyPrefix.clusterSetupProgress, clusterId),
+    progress
+  );
+  return res;
+};

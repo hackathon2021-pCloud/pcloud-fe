@@ -1,0 +1,45 @@
+.syncing {
+  width: 100%;
+}
+
+.syncState {
+	padding: 0;
+	margin: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.selectWrapper {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  line-height: 18px;
+      margin-right: -10px;
+
+  /* filter_gray */
+
+  color: #6a707e;
+}
+
+.select :global(.ant-select-selector) {
+  border: none !important;
+  height: 20px;
+}
+
+.select:global(.ant-select) {
+	height: 20px;
+}
+
+.select :global(.ant-select-selection-item) {
+	line-height: 20px !important;
+}
+
+.select :global(.ant-select-selection-item) {
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--pcloud-accent-blue);
+}
