@@ -91,16 +91,10 @@ export default function Register() {
   if (!registerToken) {
     return (
       <Layout>
-        <p>Invalid RegisterToken</p>
+        <p>RegisterToken</p>
       </Layout>
     );
   }
-  console.log({
-    query,
-    user,
-    userClusterCountSwr: userClusterSwr,
-    createdCluster,
-  });
 
   return (
     <Layout title="Register">
