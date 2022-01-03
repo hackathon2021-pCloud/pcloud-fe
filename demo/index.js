@@ -12,7 +12,7 @@ const writeFile = (state) => {
   fs.writeFileSync(STATE_FILE_PATH, JSON.stringify(state));
 };
 
-const HOST = "http://localhost:3000/";
+const HOST = "https://pcloud-fe.vercel.app/";
 const API_PREFIX = `${HOST}api/`;
 const AUTH_KEY = "authKeyExample";
 const STEPS = [
