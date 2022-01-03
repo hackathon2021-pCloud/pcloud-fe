@@ -3,29 +3,24 @@ import cx from 'classnames'
 import { useUser } from "@auth0/nextjs-auth0";
 import { useRouter } from "next/router";
 import "antd/dist/antd.css";
-import { Layout, Menu, Breadcrumb } from "antd";
+import { Layout, Menu } from "antd";
 import {
-  DesktopOutlined,
-  PieChartOutlined,
-  FileOutlined,
-  TeamOutlined,
-  UserOutlined,
   DashboardOutlined,
   DatabaseOutlined,
 } from "@ant-design/icons";
-import DashboardIcon from "./Icons/Dashboard";
-import ClusterIcon from "./Icons/Cluster";
+import Head from "next/head";
 import * as style from './Layout.module.css'
 import Avatar from "./Avatar";
-import useSWR, { SWRConfig } from "swr";
+import { SWRConfig } from "swr";
 
-const { Header, Content, Footer, Sider } = Layout;
-const { SubMenu } = Menu;
+const { Header, Content, Sider } = Layout;
 
 export default function BasicLayout({
   children,
+  title = 'pCloud Admin',
 }: {
   children: React.ReactChild;
+  title?: string
 }) {
   const { user, error, isLoading } = useUser();
   const [collapsed, setCollapsed] = React.useState(false);
@@ -45,6 +40,9 @@ export default function BasicLayout({
       }}
     >
       <Layout style={{ minHeight: "100vh" }}>
+        <Head>
+          <title>{title}</title>
+        </Head>
         <Sider
           collapsible
           collapsed={collapsed}

@@ -4,7 +4,7 @@ import { fetcher } from "./fetcher";
 
 export default function useCluster(query: ClusterGetRequestQuery) {
   const { data, error } = useSWR<ClusterGetResponse>(
-    `/api/cluster?userId=${encodeURIComponent(query.userId)}&clusterId=${encodeURIComponent(query.clusterId)}`,
+    query.clusterId ? `/api/cluster?userId=${encodeURIComponent(query.userId)}&clusterId=${encodeURIComponent(query.clusterId)}` : null,
     fetcher
   );
 

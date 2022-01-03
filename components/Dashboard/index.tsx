@@ -8,7 +8,7 @@ import ChartCard from "./ChartCard";
 
 export default function Dashbaord() {
   return (
-    <Layout>
+    <Layout title="Dashboard">
       <div className={style.page}>
         <Card className={style.clusterCard}>
           <Fragment>

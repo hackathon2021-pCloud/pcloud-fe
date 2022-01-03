@@ -5,13 +5,13 @@ import * as style from "./Input.module.css";
 export default function Input({
   value,
   label,
-  type,
+  type = 'editing',
   onChange,
   className
 }: {
   value: string;
   label: string;
-  type: "showing" | "editing";
+  type?: "showing" | "editing";
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   className?: string
 }) {

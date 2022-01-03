@@ -1,11 +1,11 @@
 import { Fragment } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { useUser } from "@auth0/nextjs-auth0";
-import { ClusterInfo, ClusterSetupStatus, StorageProvider } from "../../types";
 import Layout from "../Layout";
 import Card from "../Card";
 import Input from "../Input";
-import * as style from './index.module.css';
+import * as style from "./index.module.css";
 import CheckpointList from "./CheckpointList";
 import useCluster from "../../client-utils/useCluster";
 import Loader from "../Loader";
@@ -31,25 +31,38 @@ export interface ClusterInfo extends BasicJsonModel {
  */
 
 export default function Cluster() {
-  const {user} = useUser()
+  const { user } = useUser();
   const router = useRouter();
   const { id } = router.query;
-  const clusterSwr = useCluster({userId: user.sub, clusterId: id as string})
+  const clusterSwr = useCluster({ userId: user.sub, clusterId: id as string });
 
-  if (!clusterSwr.data?.cluster) {
+  if (!id) {
     return (
-      <div className={style.loadingOverlay}>
-        <Loader />
-      </div>
+      <Layout title="Cluster">
+        <Fragment>
+          No cluster id,  {" "}
+          <Link href={"/"}>
+            <a>back to Dashbaord</a>
+          </Link>
+        </Fragment>
+      </Layout>
     );
   }
 
-  const cluster = clusterSwr.data.cluster
+  if (!clusterSwr.data?.cluster) {
+    return (
+      <Layout title={`Cluster${cluster ? `: ${cluster.name}` : ""}`}>
+        <div className={style.loadingOverlay}>
+          <Loader />
+        </div>
+      </Layout>
+    );
+  }
 
-  console.log(clusterSwr)
+  const cluster = clusterSwr.data.cluster;
 
   return (
-    <Layout>
+    <Layout title={`Cluster${cluster ? `: ${cluster.name}` : ""}`}>
       <Fragment>
         <h1 className="textMedium15">Cluster: {cluster.name}</h1>
         <Card className={style.infoCard}>

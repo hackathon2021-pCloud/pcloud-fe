@@ -103,7 +103,7 @@ export default function Register() {
   });
 
   return (
-    <Layout>
+    <Layout title="Register">
       <Fragment>
         <Steps current={currentStep} size="small">
           {STEPS.map((item) => (
