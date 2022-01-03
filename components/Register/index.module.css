@@ -1,0 +1,70 @@
+.spLogo {
+  display: block;
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+.listItem {
+  border-radius: 15px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.listItem:hover {
+}
+
+.listItem + .listItem {
+  margin-left: 20px;
+}
+
+.list {
+  display: flex;
+  margin: 0;
+  justify-content: space-evenly;
+}
+
+.confirmWrapper {
+  display: flex;
+  justify-content: right;
+}
+
+.step {
+	display: flex;
+}
+
+.code {
+	    font-size: 40px;
+    margin: 0;
+}
+
+.clusterName {
+	width: 300px;
+}
+
+.codeWrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.tiupSetup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.tiupProgress {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.tiupProgressNumber {
+  
+}
+
+.tiupStatus {
+  display: flex;
+  align-items: center;
+}

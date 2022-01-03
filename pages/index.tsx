@@ -8,6 +8,7 @@ import Avatar from "../components/Avatar";
 import PCloud from "../components/PCloud";
 import Logo from "../components/Logo";
 import Loader from "../components/Loader";
+import Layout from '../components/Layout';
 
 export default function Home() {
   const { user, error, isLoading } = useUser();
@@ -39,18 +40,20 @@ export default function Home() {
   }
 
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>pCloud</title>
-      </Head>
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <PCloud />
-        </h1>
-        <div className={styles.youandme}>
-          <Logo /> + <div className={styles.userHolder}>{userElement}</div>
-        </div>
-      </main>
-    </div>
+    <Layout>
+      <div className={styles.container}>
+        <Head>
+          <title>pCloud</title>
+        </Head>
+        <main className={styles.main}>
+          <h1 className={styles.title}>
+            Welcome to <PCloud />
+          </h1>
+          <div className={styles.youandme}>
+            <Logo /> + <div className={styles.userHolder}>{userElement}</div>
+          </div>
+        </main>
+      </div>
+    </Layout>
   );
 }

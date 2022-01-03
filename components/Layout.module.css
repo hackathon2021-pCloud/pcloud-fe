@@ -1,0 +1,57 @@
+.sider {
+}
+
+.sider :global(.ant-menu-title-content) {
+	margin-left: 14px !important;
+}
+
+.logo {
+  padding: 17px 24px;
+  height: 60px;
+  border-bottom: 1px solid #ebeff2;
+
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 25px;
+
+  /* Accent blue */
+
+  color: #109cf1;
+}
+
+.user {
+  display: flex;
+  padding: 0 24px;
+  margin-top: 15px;
+  margin-bottom: 40px;
+}
+
+.avatar {
+  margin-right: 16px;
+}
+
+.userMenuItem {
+  height: 80px !important;
+}
+
+.name {
+  margin: 0;
+  transition: opacity 0.5s;
+}
+
+.email {
+  margin: 0;
+  transition: opacity 0.5s;
+}
+
+.hide {
+  opacity: 0;
+}
+
+.fullSider .menuItem {
+  padding: 0 24px !important;
+}
+
+.header {
+	background-color: #ffffff;
+}

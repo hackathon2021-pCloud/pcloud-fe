@@ -1,0 +1,32 @@
+.wrapper {
+	display: flex;
+	flex-direction: column;
+}
+
+.label {
+	font-weight: 500;
+font-size: 11px;
+line-height: 16px;
+/* identical to box height */
+
+/* text_help_gray */
+
+color: #818E9B;
+}
+
+.wrapper:focus-within .label {
+	color: var(--pcloud-accent-blue);
+}
+
+.input {
+	border: none;
+	font-weight: normal;
+font-size: 13px;
+line-height: 19px;
+/* table_black */
+color: #323C47;
+border-bottom: 1px solid var(--gray);
+padding-bottom: 6px;
+margin-top: 4px;
+outline: none;
+}
