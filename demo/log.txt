@@ -48,9 +48,9 @@ Request config: {"method":"PUT","body":"{\"clusterId\":\"QZhYRmesHkWYKFS27\",\"i
 Response: {}
 
 
-
-Usage: Get info from temporary token
-get token from User: nKqDJyOGwTrxyrc29
+STEP 6: recover to checkpoint
+ask user to open page in browser to get token: https://pcloud-fe.vercel.app/cluster?id=QZhYRmesHkWYKFS27
+get token from user: nKqDJyOGwTrxyrc29
 Request URL: https://pcloud-fe.vercel.app/api/temporary-token?token=nKqDJyOGwTrxyrc29
 Request config: {"method":"GET"}
 Response: {"result":"{\"checkpoint\":{\"checkpointTime\":1641168000000,\"id\":\"BaWtcIiMgMcyyvj28\",\"createTime\":\"1641298218452\",\"clusterId\":\"QZhYRmesHkWYKFS27\",\"uploadProgress\":\"100\",\"uploadStatus\":\"ongoing\",\"url\":\"s3://checkpoint-1\",\"backupSize\":\"20\"},\"cluster\":{\"setupStatus\":\"finish\",\"id\":\"QZhYRmesHkWYKFS27\",\"laskCheckpointTime\":1641168000000,\"storageProvider\":\"AWS\",\"name\":\"Cluster 4\",\"createTime\":\"1641298173220\",\"backupSize\":null,\"backupUrl\":\"s3://backupUrl\"}}"}
