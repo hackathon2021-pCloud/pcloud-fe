@@ -1,10 +1,11 @@
 import { Progress, Table } from "antd";
 import { useUser } from "@auth0/nextjs-auth0";
+import cx from 'classnames';
 import useClusterCheckpoints from "../../client-utils/useClusterCheckpoints";
 import { ClusterInfo } from "../../types";
 import Loader from "../Loader";
 import ActionButton from "./ActionButton";
-import formatDate from "../../client-utils/formatDate";
+import formatDate, {formatTime} from "../../client-utils/formatDate";
 import * as style from './CheckpointList.module.css';
 
 interface ClusterCheckPoint {
@@ -19,26 +20,32 @@ interface ClusterCheckPoint {
 
 export default function CheckpointList({ cluster }: { cluster: ClusterInfo }) {
   const {user} = useUser();
-  console.log("CheckpointList");
-  console.log({cluster})
   const checkpointListSwr = useClusterCheckpoints({userId: user.sub, clusterId: cluster.id})
   const columns = [
     {
-      title: "Cluster ID",
-      dataIndex: "clusterId",
-      key: "clusterId",
+      title: "Checkpoint ID",
+      dataIndex: "id",
+      key: "id",
+      width: 150,
     },
     {
       title: "Checkpoint Time",
       dataIndex: "checkpointTime",
       key: "checkpointTime",
-      render: (time) => formatDate(time),
+      width: 170,
+      render: (time) => (
+        <div className={style.dateWrapper}>
+          <span className={cx(style.timeString)}>{formatTime(time)}</span>
+          <span className={cx(style.dateString)}>{formatDate(time)}</span>
+        </div>
+      ),
     },
     {
       title: "Operator",
       dataIndex: "operator",
       key: "operator",
       render: (value) => value || "unknown",
+      width: 80,
     },
     {
       title: "Upload Progress",
@@ -50,10 +57,12 @@ export default function CheckpointList({ cluster }: { cluster: ClusterInfo }) {
         }
         return "Finished";
       },
+      width: 130,
     },
     {
       title: "Action",
       key: "action",
+      width: 300,
       render: (text, row) => (
         <div className={style.buttonWrapper}>
           <ActionButton
@@ -78,7 +87,13 @@ export default function CheckpointList({ cluster }: { cluster: ClusterInfo }) {
           <Loader />
         </div>
       )}
-      <Table rowKey={"id"} className={style.table} columns={columns} dataSource={checkpointListSwr.data?.checkpoints || []} />
+      <Table
+        scroll={{ x: 1000 }}
+        rowKey={"id"}
+        className={style.table}
+        columns={columns}
+        dataSource={checkpointListSwr.data?.checkpoints || []}
+      />
     </div>
   );
 }
