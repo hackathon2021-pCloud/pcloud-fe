@@ -5,6 +5,12 @@ export const getRequestBody = (
   req: NextApiRequest,
   requiredKeys: string[] = []
 ) => {
+  if (typeof req.body === "object") {
+    if (requiredKeys.some((k) => !req.body[k])) {
+      return null;
+    }
+    return req.body;
+  }
   try {
     const result = JSON.parse(req.body);
     if (requiredKeys.some((k) => !result[k])) {
@@ -38,4 +44,4 @@ export const dbError = (res: NextApiResponse, error: DBError) =>
 export const removeCredentialsFromCluster = (cluster: ClusterInfo) => {
   delete cluster.authKey;
   delete cluster.owner;
-}
+};
