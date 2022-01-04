@@ -1,0 +1,59 @@
+STEP 1: get register token
+Request URL: https://pcloud-fe.vercel.app/api/register-token
+Request config: {"method":"POST","body":"{\"authKey\":\"authKeyExample\"}"}
+Response: {"registerToken":"sphXcUOEHOSTjsg26"}
+ask user to open page in browser: https://pcloud-fe.vercel.app/register?register_token=sphXcUOEHOSTjsg26
+
+
+
+STEP 2: get cluster info
+get clusterId from user: QZhYRmesHkWYKFS27
+Request URL: https://pcloud-fe.vercel.app/api/cluster?authKey=authKeyExample&clusterId=QZhYRmesHkWYKFS27
+Request config: {"method":"GET"}
+Response: {"cluster":{"setupStatus":"registered","id":"QZhYRmesHkWYKFS27","createTime":"1641298173220","storageProvider":"AWS","name":"Cluster 4","laskCheckpointTime":null,"backupSize":null}}
+
+
+
+STEP 3: TiUP setup progress (10)
+Request URL: https://pcloud-fe.vercel.app/api/cluster-setup-progress
+Request config: {"method":"POST","body":"{\"clusterId\":\"QZhYRmesHkWYKFS27\",\"authKey\":\"authKeyExample\",\"progress\":10,\"backupUrl\":\"s3://backupUrl\"}"}
+Response: {}
+
+
+
+STEP 3: TiUP setup progress (50)
+Request URL: https://pcloud-fe.vercel.app/api/cluster-setup-progress
+Request config: {"method":"POST","body":"{\"clusterId\":\"QZhYRmesHkWYKFS27\",\"authKey\":\"authKeyExample\",\"progress\":50,\"backupUrl\":\"s3://backupUrl\"}"}
+Response: {}
+
+
+
+STEP 3: TiUP setup progress (100)
+Request URL: https://pcloud-fe.vercel.app/api/cluster-setup-progress
+Request config: {"method":"POST","body":"{\"clusterId\":\"QZhYRmesHkWYKFS27\",\"authKey\":\"authKeyExample\",\"progress\":100,\"backupUrl\":\"s3://backupUrl\"}"}
+Response: {}
+
+
+
+STEP 4: Append checkpoint to cluster
+Request URL: https://pcloud-fe.vercel.app/api/checkpoint
+Request config: {"method":"POST","body":"{\"authKey\":\"authKeyExample\",\"clusterId\":\"QZhYRmesHkWYKFS27\",\"uploadStatus\":\"ongoing\",\"uploadProgress\":10,\"checkpointTime\":1641168000000,\"url\":\"s3://checkpoint-1\",\"backupSize\":20,\"operator\":\"operator\"}"}
+Response: {"id":"BaWtcIiMgMcyyvj28"}
+
+
+
+STEP 5: Update checkpoint uploadProgress
+Request URL: https://pcloud-fe.vercel.app/api/checkpoint
+Request config: {"method":"PUT","body":"{\"clusterId\":\"QZhYRmesHkWYKFS27\",\"id\":\"BaWtcIiMgMcyyvj28\",\"uploadStatus\":\"finish\",\"uploadProgress\":100,\"authKey\":\"authKeyExample\"}"}
+Response: {}
+
+
+
+Usage: Get info from temporary token
+get token from User: nKqDJyOGwTrxyrc29
+Request URL: https://pcloud-fe.vercel.app/api/temporary-token?token=nKqDJyOGwTrxyrc29
+Request config: {"method":"GET"}
+Response: {"result":"{\"checkpoint\":{\"checkpointTime\":1641168000000,\"id\":\"BaWtcIiMgMcyyvj28\",\"createTime\":\"1641298218452\",\"clusterId\":\"QZhYRmesHkWYKFS27\",\"uploadProgress\":\"100\",\"uploadStatus\":\"ongoing\",\"url\":\"s3://checkpoint-1\",\"backupSize\":\"20\"},\"cluster\":{\"setupStatus\":\"finish\",\"id\":\"QZhYRmesHkWYKFS27\",\"laskCheckpointTime\":1641168000000,\"storageProvider\":\"AWS\",\"name\":\"Cluster 4\",\"createTime\":\"1641298173220\",\"backupSize\":null,\"backupUrl\":\"s3://backupUrl\"}}"}
+
+
+
