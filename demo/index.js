@@ -12,6 +12,14 @@ const writeFile = (state) => {
   fs.writeFileSync(STATE_FILE_PATH, JSON.stringify(state));
 };
 
+const LOG_FILE_PATH = path.join(__dirname, "./log.txt");
+let log = "";
+const consolelog = (text) => {
+  log += `${text}
+`;
+  console.log(text);
+};
+
 const HOST = "https://pcloud-fe.vercel.app/";
 // const HOST = "http://localhost:3000/";
 const API_PREFIX = `${HOST}api/`;
@@ -26,7 +34,7 @@ const STEPS = [
     },
     onFinish: (res, currentState) => {
       currentState.registerToken = res.registerToken;
-      console.log(
+      consolelog(
         `open URL: ${HOST}register?register_token=${encodeURIComponent(
           res.registerToken
         )}`
@@ -40,7 +48,7 @@ const STEPS = [
         path.join(__dirname, "./cluster-id.txt"),
         "utf-8"
       );
-      console.log(clusterId);
+      consolelog(`get clusterId from user: ${clusterId}`);
       return `${API_PREFIX}cluster?authKey=${AUTH_KEY}&clusterId=${clusterId}`;
     },
     fetchConfig: (self, currentState) => {
@@ -142,6 +150,7 @@ const STEPS = [
         path.join(__dirname, "./temporary-token.txt"),
         "utf-8"
       );
+      consolelog(`get token from User: ${token}`)
       return `${API_PREFIX}temporary-token?token=${token}`;
     },
     fetchConfig: (self, currentState) => {
@@ -156,17 +165,17 @@ const demo = async () => {
   const currentState = readFile();
   const { currentStep = 0 } = currentState;
   const step = STEPS[currentStep];
-  console.log(step.name);
+  consolelog(step.name);
   const url =
     typeof step.url === "function" ? step.url(step, currentState) : step.url;
   const fetchConfig =
     typeof step.fetchConfig === "function"
       ? step.fetchConfig(step, currentState)
       : step.fetchConfig;
-  console.log(`Request URL: ${url}`);
-  console.log(`Request config: ${JSON.stringify(fetchConfig)}`);
+  consolelog(`Request URL: ${url}`);
+  consolelog(`Request config: ${JSON.stringify(fetchConfig)}`);
   const res = await fetch(url, fetchConfig).then((r) => r.json());
-  console.log(`Response: ${JSON.stringify(res)}`);
+  consolelog(`Response: ${JSON.stringify(res)}`);
   step.onFinish?.(res, currentState);
   if (STEPS[currentStep + 1]) {
     const nextStep = STEPS[currentStep + 1];
@@ -174,6 +183,13 @@ const demo = async () => {
     console.log(`Next: ${nextStep.name}`);
   }
   writeFile(currentState);
+  consolelog(`
+
+`)
+  if (!fs.existsSync(LOG_FILE_PATH)) {
+    fs.writeFileSync(LOG_FILE_PATH, '');
+  }
+  fs.appendFileSync(LOG_FILE_PATH, log);
 };
 
 demo();

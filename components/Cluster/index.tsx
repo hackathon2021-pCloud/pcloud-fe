@@ -9,6 +9,7 @@ import * as style from "./index.module.css";
 import CheckpointList from "./CheckpointList";
 import useCluster from "../../client-utils/useCluster";
 import Loader from "../Loader";
+import { WarningOutlined } from "@ant-design/icons";
 
 const BASIC_INFO = [
   { label: "Create Time", key: "createTime" },
@@ -40,11 +41,27 @@ export default function Cluster() {
     return (
       <Layout title="Cluster">
         <Fragment>
-          No cluster id,  {" "}
+          No cluster id specified,{" "}
           <Link href={"/"}>
             <a>back to Dashbaord</a>
           </Link>
         </Fragment>
+      </Layout>
+    );
+  }
+
+  if (clusterSwr.data?.msg === "forbidden") {
+    return (
+      <Layout title={`Cluster${cluster ? `: ${cluster.name}` : ""}`}>
+        <div className={style.forbiddenWrapper}>
+          <WarningOutlined
+            width={80}
+            height={80}
+            className={style.forbiddenIcon}
+            style={{ width: 70, height: 70, color: "#90A0B7" }}
+          />
+          <div className="textMedium15" style={{color: '#90a0b7'}}>Forbidden</div>
+        </div>
       </Layout>
     );
   }

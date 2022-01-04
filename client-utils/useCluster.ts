@@ -4,8 +4,13 @@ import { fetcher } from "./fetcher";
 
 export default function useCluster(query: ClusterGetRequestQuery) {
   const { data, error } = useSWR<ClusterGetResponse>(
-    query.clusterId ? `/api/cluster?userId=${encodeURIComponent(query.userId)}&clusterId=${encodeURIComponent(query.clusterId)}` : null,
-    fetcher
+    query.clusterId
+      ? `/api/cluster?userId=${encodeURIComponent(
+          query.userId
+        )}&clusterId=${encodeURIComponent(query.clusterId)}`
+      : null,
+    fetcher,
+    { revalidateOnFocus: false }
   );
 
   return {

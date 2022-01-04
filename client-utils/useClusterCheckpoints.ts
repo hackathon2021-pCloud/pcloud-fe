@@ -4,8 +4,11 @@ import { fetcher } from "./fetcher";
 
 export default function useClusterCheckpoints({ userId, clusterId }: CheckpointGetRequestQuery) {
   const { data, error } = useSWR<CheckpointGetResponse>(
-    `/api/checkpoint?userId=${encodeURIComponent(userId)}&clusterId=${encodeURIComponent(clusterId)}`,
-    fetcher
+    `/api/checkpoint?userId=${encodeURIComponent(
+      userId
+    )}&clusterId=${encodeURIComponent(clusterId)}`,
+    fetcher,
+    { revalidateOnFocus: false }
   );
 
   return {
