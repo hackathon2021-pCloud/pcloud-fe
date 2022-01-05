@@ -12,6 +12,7 @@
 
 .backupSizeCard {
 	flex-basis: calc(40% - 24px);
+	align-self: flex-start;
 	width: calc(40% - 24px);
 	margin: 0;
 	padding: 16px 24px;

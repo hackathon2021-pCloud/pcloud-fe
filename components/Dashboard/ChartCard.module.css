@@ -42,9 +42,6 @@
   line-height: 18px;
   color: var(--pcloud-accent-blue);
 }
-.wrapper {
-  align-self: flex-start;
-}
 .chartWrapper {
   min-height: 200px;
 }
