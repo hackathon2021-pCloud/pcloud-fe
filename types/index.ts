@@ -79,6 +79,14 @@ export type ClusterGetRequestQuery = {
 export type ClusterGetResponse = {
   cluster: ClusterInfo;
 };
+export type ClusterDeleteRequestBody = {
+  authKey?: string;
+  owner?: string;
+  clusterId: string;
+};
+export type ClusterDeleteResponse = {
+  deletedItemCount: number;
+};
 export type DBError = {
   errorCode: number,
   errorMsg: string,

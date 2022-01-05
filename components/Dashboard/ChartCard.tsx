@@ -13,7 +13,7 @@ enum SelectOptions {
 }
 export default function ChartCard() {
   return (
-    <div>
+    <div className={style.wrapper}>
       <div className={style.header}>
         <p className={cx(style.backupTitle)}>
           Backup Total Size
@@ -29,8 +29,7 @@ export default function ChartCard() {
           </Select>
         </div>
       </div>
-      <div>
-        
+      <div className={style.chartWrapper}>
       </div>
     </div>
   );

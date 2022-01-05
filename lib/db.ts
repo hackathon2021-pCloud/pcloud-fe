@@ -99,7 +99,7 @@ class HashMapOperator<T extends BasicJsonModel> {
 
   getJson = async ({ id }: { id: string }) => {
     const jsonRecord = await redis.hgetall(toRedisKey(this.name, id));
-    if (!jsonRecord) {
+    if (!jsonRecord || !jsonRecord.id) {
       return errorNotFound(`no such ${this.name}`);
     }
     const result = this.transformHgetallResult(jsonRecord);
@@ -131,6 +131,11 @@ class HashMapOperator<T extends BasicJsonModel> {
     }
     return successResponse(res);
   };
+
+  deleteJson = async ({id}: {id: string}) => {
+    const deletedCount = await redis.del(toRedisKey(this.name, id));
+    return deletedCount
+  }
 }
 export const ClusterInfoOperator = new HashMapOperator<ClusterInfo>(
   RedisKeyPrefix.clusterInfo,

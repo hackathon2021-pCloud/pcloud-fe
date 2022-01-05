@@ -19,6 +19,8 @@ import {
   ClusterSetupStatus,
   ClusterGetRequestQuery,
   ClusterGetResponse,
+  ClusterDeleteRequestBody,
+  ClusterDeleteResponse,
 } from "../../types";
 
 export default async function handler(
@@ -51,18 +53,31 @@ export default async function handler(
       authKey,
       setupStatus: ClusterSetupStatus.registered,
     });
-    const cluster = clusterResult.payload
-    removeCredentialsFromCluster(cluster)
+    const cluster = clusterResult.payload;
+    removeCredentialsFromCluster(cluster);
     await removeRegisterToken(registerToken);
-    return res
-      .status(200)
-      .json({ cluster } as ClusterPostResponse);
+    return res.status(200).json({ cluster } as ClusterPostResponse);
+  }
+  if (req.method === "DELETE") {
+    const body = getRequestBody(req, ["clusterId"]) as ClusterDeleteRequestBody;
+    if (!body || (!body.authKey && !body.owner)) {
+      return invalidRequest(res);
+    }
+    const { clusterId: id, authKey, owner } = body;
+    const clusterResult = await ClusterInfoOperator.getJson({ id });
+    if ("errorCode" in clusterResult) {
+      return dbError(res, clusterResult);
+    }
+    const {payload: cluster} = clusterResult
+    if (cluster.authKey !== authKey && cluster.owner !== owner) {
+      return forbiddenRequest(res);
+    }
+    const deletedItemCount = await ClusterInfoOperator.deleteJson({ id });
+    return res.status(200).json({ deletedItemCount } as ClusterDeleteResponse);
   }
   if (req.method === "GET") {
-    const query = getRequestQuery(req, [
-      "clusterId",
-    ]) as ClusterGetRequestQuery;
-    console.log({query})
+    const query = getRequestQuery(req, ["clusterId"]) as ClusterGetRequestQuery;
+    console.log({ query });
     if (!query || (!query.authKey && !query.userId)) {
       return invalidRequest(res);
     }
@@ -77,7 +92,7 @@ export default async function handler(
     if (clusterInfo.authKey !== authKey && clusterInfo.owner !== userId) {
       return forbiddenRequest(res);
     }
-    removeCredentialsFromCluster(clusterInfo)
+    removeCredentialsFromCluster(clusterInfo);
     return res.status(200).json({ cluster: clusterInfo } as ClusterGetResponse);
   }
   return invalidRequest(res);

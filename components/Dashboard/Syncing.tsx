@@ -1,5 +1,7 @@
+import { useUser } from "@auth0/nextjs-auth0";
 import { Select, Progress } from "antd";
 import cx from 'classnames'
+import useUserClusters from "../../client-utils/useUserClusters";
 import * as style from "./Syncing.module.css";
 
 enum SelectOptions {
@@ -9,11 +11,16 @@ enum SelectOptions {
 }
 const {Option} = Select
 export default function Syncing() {
+  const {user} = useUser() 
+  const userClusterSwr = useUserClusters(user.sub);
+
+  const clusterCount = userClusterSwr.data?.clusterInfos?.length || 0;
+
   return (
     <section className={style.syncing}>
       <div className={style.header}>
         <p className={cx(style.syncState, "textMedium13")}>
-          8 Clusters is syncing
+          {clusterCount} Clusters is syncing
         </p>
         <div className={style.selectWrapper}>
           Show:
@@ -28,7 +35,7 @@ export default function Syncing() {
       </div>
       <Progress
         strokeColor="#2ED47A"
-        percent={70}
+        percent={clusterCount === 0 ? 0 : 75}
         status="active"
         showInfo={false}
       />

@@ -9,7 +9,9 @@ import * as style from "./index.module.css";
 import CheckpointList from "./CheckpointList";
 import useCluster from "../../client-utils/useCluster";
 import Loader from "../Loader";
-import { WarningOutlined } from "@ant-design/icons";
+import { WarningOutlined, DownOutlined } from "@ant-design/icons";
+import { Dropdown, Menu, message, Modal } from "antd";
+import { ClusterDeleteRequestBody, ClusterDeleteResponse } from "../../types";
 
 const BASIC_INFO = [
   { label: "Create Time", key: "createTime" },
@@ -60,7 +62,9 @@ export default function Cluster() {
             className={style.forbiddenIcon}
             style={{ width: 70, height: 70, color: "#90A0B7" }}
           />
-          <div className="textMedium15" style={{color: '#90a0b7'}}>Forbidden</div>
+          <div className="textMedium15" style={{ color: "#90a0b7" }}>
+            Forbidden
+          </div>
         </div>
       </Layout>
     );
@@ -81,7 +85,55 @@ export default function Cluster() {
   return (
     <Layout title={`Cluster${cluster ? `: ${cluster.name}` : ""}`}>
       <Fragment>
-        <h1 className="textMedium15">Cluster: {cluster.name}</h1>
+        <div className={style.header}>
+          <h1 className="textMedium15">Cluster: {cluster.name}</h1>
+          <Dropdown
+            overlay={
+              <Menu>
+                <Menu.Item
+                  onClick={() => {
+                    Modal.confirm({
+                      title: "Remove Cluster",
+                      content: "Are you sure to remove this cluster?",
+                      onOk: async () => {
+                        console.log(cluster);
+                        const result: ClusterDeleteResponse = await fetch(
+                          "/api/cluster",
+                          {
+                            body: JSON.stringify({
+                              clusterId: cluster.id,
+                              owner: user.sub,
+                            } as ClusterDeleteRequestBody),
+                            method: "DELETE",
+                          }
+                        ).then((res) => res.json());
+                        if (result.deletedItemCount === 1) {
+                          message.success("Cluster Removed");
+                          await new Promise((res) =>
+                            setTimeout(() => res(1), 1000)
+                          );
+                          router.push("/");
+                        } else {
+                          message.error(`unexpected response: ${JSON.stringify(result)}; Please refresh the page and try again.`)
+                        }
+                      },
+                    });
+                  }}
+                  key="0"
+                >
+                  Remove Cluster
+                </Menu.Item>
+              </Menu>
+            }
+          >
+            <a
+              className="ant-dropdown-link"
+              onClick={(e) => e.preventDefault()}
+            >
+              Action <DownOutlined />
+            </a>
+          </Dropdown>
+        </div>
         <Card className={style.infoCard}>
           <Fragment>
             <h2 className="textMedium14Black">Basic Info</h2>
