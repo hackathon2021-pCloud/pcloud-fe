@@ -8,7 +8,7 @@ export default function useClusterCheckpoints({ userId, clusterId }: CheckpointG
       userId
     )}&clusterId=${encodeURIComponent(clusterId)}`,
     fetcher,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: true, refreshInterval: 5000 }
   );
 
   return {
