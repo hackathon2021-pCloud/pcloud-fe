@@ -66,10 +66,13 @@ export default function SimpleChart() {
 
   return (
     <Fragment>
-      <div className="textMedium11Gray" style={{ marginBottom: 20, width: '100%' }}>
+      <div
+        className="textMedium11Gray"
+        style={{ marginBottom: 20, width: "100%" }}
+      >
         Size in GB
       </div>
-      <div style={{width: '100%', height: 200}}>
+      <div style={{ width: "100%", height: 200 }}>
         <ResponsiveContainer width="100%">
           <ComposedChart data={chartData}>
             <defs>
@@ -91,10 +94,26 @@ export default function SimpleChart() {
               axisLine={false}
               tickFormatter={convertValue}
             />
-            <Tooltip />
+            <Tooltip
+              content={({active, payload, label}) => {
+                if (!payload?.[0]?.payload) {
+                  return null;
+                }
+                const { time, size } = payload?.[0]?.payload;
+                return (
+                  <div
+                    style={{ background: "#fff", border: "1px solid #90A0B7", padding: '10px', borderRadius: 3 }}
+                  >
+                    <div>{formatDate(time, "pppp")}</div>
+                    <div>size: {size}</div>
+                  </div>
+                );
+              }}
+            />
             <CartesianGrid vertical={false} strokeDasharray="10" />
 
             <Line
+              name="line"
               type="monotone"
               strokeLinecap="round"
               strokeWidth={2}
