@@ -105,7 +105,7 @@ export default function SimpleChart() {
                     style={{ background: "#fff", border: "1px solid #90A0B7", padding: '10px', borderRadius: 3 }}
                   >
                     <div>{formatDate(time, "pppp")}</div>
-                    <div>size: {size}</div>
+                    <div>size: {size/1000}</div>
                   </div>
                 );
               }}
