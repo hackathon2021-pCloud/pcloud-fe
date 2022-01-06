@@ -1,8 +1,13 @@
-import { Fragment } from "react";
 import cx from "classnames";
-import Card from "../Card";
 import * as style from "./ChartCard.module.css";
-import { Select, Progress } from "antd";
+import { Select } from "antd";
+
+import dynamic from "next/dynamic";
+import Loader from "../Loader";
+
+const Chart = dynamic(() => import("./Chart"), {
+  loading: () => <Loader />,
+});
 
 const {Option} = Select
 
@@ -30,6 +35,7 @@ export default function ChartCard() {
         </div>
       </div>
       <div className={style.chartWrapper}>
+        <Chart />
       </div>
     </div>
   );
