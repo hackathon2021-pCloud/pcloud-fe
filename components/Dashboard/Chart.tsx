@@ -102,10 +102,15 @@ export default function SimpleChart() {
                 const { time, size } = payload?.[0]?.payload;
                 return (
                   <div
-                    style={{ background: "#fff", border: "1px solid #90A0B7", padding: '10px', borderRadius: 3 }}
+                    style={{
+                      background: "#fff",
+                      border: "1px solid #90A0B7",
+                      padding: "10px",
+                      borderRadius: 3,
+                    }}
                   >
-                    <div>{formatDate(time, "pppp")}</div>
-                    <div>size: {size/1000}</div>
+                    <div>{formatDate(time, "PPpp")}</div>
+                    <div>size: {size / 1000}</div>
                   </div>
                 );
               }}
