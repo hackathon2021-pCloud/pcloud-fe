@@ -21,9 +21,14 @@ const BASIC_INFO = [
     formatter: (time: number) => formatDate(time),
   },
   {
-    label: "Last Cehckpoint",
+    label: "Last Checkpoint",
     key: "laskCheckpointTime",
-    formatter: (time: number) => formatDate(time),
+    formatter: (time: number) => {
+      if (time > Number(new Date('2021-01-01'))) {
+        return formatDate(time);
+      }
+      return 'N/A'
+    }
   },
   { label: "ID", key: "id" },
   { label: "Setup Status", key: "setupStatus" },
