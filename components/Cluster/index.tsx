@@ -15,8 +15,16 @@ import { ClusterDeleteRequestBody, ClusterDeleteResponse } from "../../types";
 import formatDate from "../../client-utils/formatDate";
 
 const BASIC_INFO = [
-  { label: "Create Time", key: "createTime", formatter: (time: number) => formatDate(time) },
-  { label: "Last Cehckpoint", key: "laskCheckpointTime" },
+  {
+    label: "Create Time",
+    key: "createTime",
+    formatter: (time: number) => formatDate(time),
+  },
+  {
+    label: "Last Cehckpoint",
+    key: "laskCheckpointTime",
+    formatter: (time: number) => formatDate(time),
+  },
   { label: "ID", key: "id" },
   { label: "Setup Status", key: "setupStatus" },
   { label: "Storage Provider", key: "storageProvider" },
