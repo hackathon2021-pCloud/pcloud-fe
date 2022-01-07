@@ -30,6 +30,7 @@
 }
 
 .infoValue {
+  min-width: 110px;
   font-size: 13px;
   line-height: 19px;
 

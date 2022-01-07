@@ -11,6 +11,8 @@ import useUserClusters from "../../client-utils/useUserClusters";
 import { useUser } from "@auth0/nextjs-auth0";
 import Loader from "../Loader";
 
+const MINIMUM_CHECKPOING_TIME = Number(new Date('2022-01-01'))
+
 export default function ClusterList() {
   const { user } = useUser();
   const userClusterSwr = useUserClusters(user.sub);
@@ -45,7 +47,7 @@ export default function ClusterList() {
                   <div className={style.infoWrapper}>
                     <span className={style.infoLabel}>Last Checkpoint:</span>
                     <span className={style.infoValue}>
-                      {formatDate(clt.laskCheckpointTime)}
+                      {clt.laskCheckpointTime >= MINIMUM_CHECKPOING_TIME ? formatDate(clt.laskCheckpointTime) : 'N/A'}
                     </span>
                   </div>
                   <div className={style.connectionButton}>Connected</div>

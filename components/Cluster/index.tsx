@@ -12,9 +12,10 @@ import Loader from "../Loader";
 import { WarningOutlined, DownOutlined } from "@ant-design/icons";
 import { Dropdown, Menu, message, Modal } from "antd";
 import { ClusterDeleteRequestBody, ClusterDeleteResponse } from "../../types";
+import formatDate from "../../client-utils/formatDate";
 
 const BASIC_INFO = [
-  { label: "Create Time", key: "createTime" },
+  { label: "Create Time", key: "createTime", formatter: (time: number) => formatDate(time) },
   { label: "Last Cehckpoint", key: "laskCheckpointTime" },
   { label: "ID", key: "id" },
   { label: "Setup Status", key: "setupStatus" },
@@ -114,7 +115,11 @@ export default function Cluster() {
                           );
                           router.push("/");
                         } else {
-                          message.error(`unexpected response: ${JSON.stringify(result)}; Please refresh the page and try again.`)
+                          message.error(
+                            `unexpected response: ${JSON.stringify(
+                              result
+                            )}; Please refresh the page and try again.`
+                          );
                         }
                       },
                     });
@@ -138,11 +143,11 @@ export default function Cluster() {
           <Fragment>
             <h2 className="textMedium14Black">Basic Info</h2>
             <ul className={style.infoList}>
-              {BASIC_INFO.map(({ label, key }) => (
+              {BASIC_INFO.map(({ label, key, formatter }) => (
                 <li key={label} className={style.infoItem}>
                   <Input
                     label={label}
-                    value={cluster[key]}
+                    value={formatter?.(cluster[key]) || cluster[key] || 'N/A'}
                     type="showing"
                     onChange={() => {}}
                   />
