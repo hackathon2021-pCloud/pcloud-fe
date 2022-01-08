@@ -55,7 +55,7 @@ export default async function handler(
     });
     const cluster = clusterResult.payload;
     removeCredentialsFromCluster(cluster);
-    await removeRegisterToken(registerToken);
+    // await removeRegisterToken(registerToken);
     return res.status(200).json({ cluster } as ClusterPostResponse);
   }
   if (req.method === "DELETE") {

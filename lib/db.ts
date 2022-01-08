@@ -50,7 +50,7 @@ export const createRegisterToken = async (authKey: string) => {
   return { registerToken: id };
 };
 export const removeRegisterToken = async (registerToken: string) => {
-  await redis.del(toRedisKey(RedisKeyPrefix.registerToken, registerToken));
+  // await redis.del(toRedisKey(RedisKeyPrefix.registerToken, registerToken));
 };
 export const getAuthKeyOfRegisterToken = async (registerToken: string) => {
   const authKey = (await redis.get(
