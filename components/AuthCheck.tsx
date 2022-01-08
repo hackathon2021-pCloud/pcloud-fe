@@ -12,8 +12,6 @@ export default function AuthCheck({
   const { user, error, isLoading } = useUser();
   const router = useRouter()
 
-  console.log({error, isLoading})
-
   const notLoggedIn = !isLoading && !user
   useEffect(() => {
     if (user) {

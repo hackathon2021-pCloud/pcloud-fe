@@ -5,12 +5,13 @@ import { useUser } from "@auth0/nextjs-auth0";
 
 import AWS from "./Amazon_Web_Services-Logo.wine.svg";
 import kingsoft from "./kingsoft.png";
+import GCP from "./google-cloud-logo.svg";
+import Azure from "./Azure.png";
 import { useRouter } from "next/router";
-import { Steps, Button, message, Progress, Modal } from "antd";
+import { Steps, Button, Modal, Table } from "antd";
 const { Step } = Steps;
 
 import * as style from "./index.module.css";
-import Loader from "../Loader";
 import Input from "../Input";
 import useUserCluster from "../../client-utils/useUserClusters";
 import {
@@ -25,6 +26,14 @@ const StorageProviders = [
   {
     name: "AWS",
     image: AWS,
+  },
+  {
+    name: "GCP",
+    image: GCP,
+  },
+  {
+    name: "Azure",
+    image: Azure,
   },
   {
     name: "Kingsoft",
@@ -56,12 +65,33 @@ const isNextButtonDisabled = ({
   return false;
 };
 
+const getBackupPriceInfo = (backupSize: number) => {
+  if (backupSize < 100) {
+    return {
+      text: "< 100GB (Free tier)",
+      price: 0,
+    };
+  }
+  if (backupSize < 1000) {
+    return {
+      text: `${backupSize}GB`,
+      price: ((backupSize / 1000) * 30).toFixed(2),
+    };
+  }
+  const tbNumber = (backupSize / 1000).toFixed(2);
+  return {
+    text: `${tbNumber}TB`,
+    price: (parseFloat(tbNumber) * 30).toFixed(2),
+  };
+};
+
 export default function Register() {
   const router = useRouter();
   const [clusterName, setClusterName] = useState<string>("");
   const [selectedSp, setSelectedSp] = useState<string>("");
   const [currentStep, setCurrentStep] = useState(0);
-  const [createdCluster, setCreatedCluster] = useState<ClusterInfo | undefined>(undefined
+  const [createdCluster, setCreatedCluster] = useState<ClusterInfo | undefined>(
+    undefined
     // {
     //   authKey: "authKeyExample",
     //   createTime: 1641184362792,
@@ -87,6 +117,11 @@ export default function Register() {
 
   const { query } = router;
   const registerToken = query["register_token"];
+  const backupSize =
+    parseInt(query["backup_size"] as string, 10) === NaN
+      ? 1000
+      : parseInt(query["backup_size"] as string);
+  const backupPriceInfo = getBackupPriceInfo(backupSize);
 
   if (!registerToken) {
     return (
@@ -115,25 +150,82 @@ export default function Register() {
           </Card>
         )}
         {currentStep === 1 && (
-          <Card>
-            <ul className={style.list}>
-              {StorageProviders.map((sp) => {
-                const isSelected = selectedSp === sp.name;
-                return (
-                  <li
-                    key={sp.name}
-                    className={style.listItem}
-                    onClick={() => setSelectedSp(sp.name)}
-                  >
-                    <img src={sp.image.src} className={style.spLogo} />
-                    <Button type={isSelected ? "primary" : "default"}>
-                      {isSelected ? `Selected ${sp.name}` : "Select"}
-                    </Button>
-                  </li>
-                );
-              })}
-            </ul>
-          </Card>
+          <Fragment>
+            <Card className={style.storageProviderCard}>
+              <ul className={style.list}>
+                {StorageProviders.map((sp) => {
+                  const isSelected = selectedSp === sp.name;
+                  return (
+                    <li
+                      key={sp.name}
+                      className={style.listItem}
+                      onClick={() => setSelectedSp(sp.name)}
+                    >
+                      <img src={sp.image.src} className={style.spLogo} />
+                      <Button type={isSelected ? "primary" : "default"}>
+                        {isSelected ? `Selected ${sp.name}` : "Select"}
+                      </Button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </Card>
+            <div className={style.billingTitle}>
+              Estimated Charge:{" "}
+              <span className={style.billingPrice}>
+                ${backupPriceInfo.price}
+              </span>
+            </div>
+            <Table
+              className={style.billingTable}
+              columns={[
+                {
+                  title: "ITEM",
+                  dataIndex: "item",
+                  key: "item",
+                  width: 150,
+                },
+                {
+                  title: "COUNT",
+                  dataIndex: "count",
+                  key: "count",
+                  width: 150,
+                },
+                {
+                  title: "UNIT PRICE",
+                  dataIndex: "unitPrice",
+                  key: "unitPrice",
+                  width: 150,
+                },
+                {
+                  title: "PRICE",
+                  dataIndex: "price",
+                  key: "price",
+                  width: 150,
+                },
+              ]}
+              dataSource={[
+                {
+                  item: "Backup Storage",
+                  count: backupPriceInfo.text,
+                  unitPrice: "$30 per TB",
+                  price: `$${backupPriceInfo.price}`,
+                },
+                // {
+                //   item: "ETL",
+                //   count: "1",
+                //   unitPrice: "$100",
+                //   price: "$100",
+                // },
+                // {
+                //   item: "TOTAL",
+                //   price: "$1000",
+                // },
+              ]}
+              rowKey="item"
+              pagination={false}
+            />
+          </Fragment>
         )}
         {currentStep === 2 && (
           <Card>

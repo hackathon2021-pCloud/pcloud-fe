@@ -31,22 +31,26 @@
 }
 
 .step {
-	display: flex;
+  display: flex;
 }
 
 .code {
-	    font-size: 40px;
-    margin: 0;
+  font-size: 40px;
+  margin: 0;
 }
 
 .clusterName {
-	width: 300px;
+  width: 300px;
 }
 
 .codeWrapper {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.storageProviderCard {
+  padding-bottom: 30px;
 }
 
 .tiupSetup {
@@ -61,10 +65,44 @@
 }
 
 .tiupProgressNumber {
-  
 }
 
 .tiupStatus {
   display: flex;
   align-items: center;
+}
+
+.billingTitle {
+  margin-bottom: 15px;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 22px;
+  /* table_black */
+
+  color: var(--pcloud-table-black);
+}
+
+.billing {
+  padding-bottom: 20px;
+}
+
+.billing :global(.ant-collapse-content-box) {
+  padding: 0;
+}
+
+.billingPanel {
+  padding: 0;
+}
+
+.billingPanel :global(.ant-collapse-header) {
+  padding: 0;
+}
+
+.billingPrice {
+  font-weight: 700;
+  color: var(--pcloud-accent-blue);
+}
+
+.billingTable {
+  margin-bottom: 15px;
 }
