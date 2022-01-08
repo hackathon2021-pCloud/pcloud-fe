@@ -67,6 +67,7 @@ export type ClusterPostRequestBody = {
   name: string;
   storageProvider: StorageProvider;
   owner: string;
+  backupSize: number;
 };
 export type ClusterPostResponse = {
   cluster: ClusterInfo;

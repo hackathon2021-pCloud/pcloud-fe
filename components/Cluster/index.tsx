@@ -48,6 +48,29 @@ export interface ClusterInfo extends BasicJsonModel {
 }
  */
 
+const getBackupPriceInfo = (backupSize: number) => {
+  if (isNaN(backupSize)) {
+    backupSize = 10;
+  }
+  if (backupSize < 100) {
+    return {
+      text: "< 100GB (Free tier)",
+      price: 0,
+    };
+  }
+  if (backupSize < 1000) {
+    return {
+      text: `${backupSize}GB`,
+      price: ((backupSize / 1000) * 30).toFixed(2),
+    };
+  }
+  const tbNumber = (backupSize / 1000).toFixed(2);
+  return {
+    text: `${tbNumber}TB`,
+    price: (parseFloat(tbNumber) * 30).toFixed(2),
+  };
+};
+
 export default function Cluster() {
   const { user } = useUser();
   const router = useRouter();
@@ -97,6 +120,7 @@ export default function Cluster() {
   }
 
   const cluster = clusterSwr.data.cluster;
+  const backupPriceInfo = getBackupPriceInfo(cluster.backupSize || 10);
 
   return (
     <Layout title={`Cluster${cluster ? `: ${cluster.name}` : ""}`}>
@@ -230,8 +254,8 @@ export default function Cluster() {
             dataSource={[
               {
                 time: Number(new Date("2022-01-31")),
-                backupStorageSize: "300GB",
-                price: "$9.00",
+                backupStorageSize: backupPriceInfo.text,
+                price: `$${backupPriceInfo.price}`,
                 status: "Pending",
               },
               // {

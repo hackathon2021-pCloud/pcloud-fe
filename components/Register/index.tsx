@@ -120,7 +120,7 @@ export default function Register() {
 
   const { query } = router;
   const registerToken = query["register_token"];
-  const backupSize = parseInt(query["backup_size"] as string, 10)
+  const backupSize = isNaN(parseInt(query["backup_size"] as string, 10)) ? 10 : parseInt(query["backup_size"] as string, 10);
   const backupPriceInfo = getBackupPriceInfo(backupSize);
 
   if (!registerToken) {
@@ -273,6 +273,7 @@ export default function Register() {
                     storageProvider: selectedSp,
                     name: clusterName,
                     registerToken,
+                    backupSize,
                   } as ClusterPostRequestBody),
                 });
                 setIsNextButtonLoading(false);
