@@ -66,6 +66,9 @@ const isNextButtonDisabled = ({
 };
 
 const getBackupPriceInfo = (backupSize: number) => {
+  if (isNaN(backupSize)) {
+    backupSize = 10
+  }
   if (backupSize < 100) {
     return {
       text: "< 100GB (Free tier)",
@@ -117,10 +120,7 @@ export default function Register() {
 
   const { query } = router;
   const registerToken = query["register_token"];
-  const backupSize =
-    parseInt(query["backup_size"] as string, 10) === NaN
-      ? 1000
-      : parseInt(query["backup_size"] as string);
+  const backupSize = parseInt(query["backup_size"] as string, 10)
   const backupPriceInfo = getBackupPriceInfo(backupSize);
 
   if (!registerToken) {
