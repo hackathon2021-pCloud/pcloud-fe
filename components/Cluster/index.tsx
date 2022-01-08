@@ -1,7 +1,8 @@
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useUser } from "@auth0/nextjs-auth0";
+import cx from 'classnames'
 import Layout from "../Layout";
 import Card from "../Card";
 import Input from "../Input";
@@ -10,7 +11,7 @@ import CheckpointList from "./CheckpointList";
 import useCluster from "../../client-utils/useCluster";
 import Loader from "../Loader";
 import { WarningOutlined, DownOutlined } from "@ant-design/icons";
-import { Dropdown, Menu, message, Modal } from "antd";
+import { Dropdown, Menu, message, Modal, Table } from "antd";
 import { ClusterDeleteRequestBody, ClusterDeleteResponse } from "../../types";
 import formatDate from "../../client-utils/formatDate";
 
@@ -52,6 +53,7 @@ export default function Cluster() {
   const router = useRouter();
   const { id } = router.query;
   const clusterSwr = useCluster({ userId: user.sub, clusterId: id as string });
+  const [currentTable, setCurrentTable] = useState<"Checkpoints" | "Billing">("Checkpoints");
 
   if (!id) {
     return (
@@ -160,7 +162,7 @@ export default function Cluster() {
                 <li key={label} className={style.infoItem}>
                   <Input
                     label={label}
-                    value={formatter?.(cluster[key]) || cluster[key] || 'N/A'}
+                    value={formatter?.(cluster[key]) || cluster[key] || "N/A"}
                     type="showing"
                     onChange={() => {}}
                   />
@@ -169,7 +171,83 @@ export default function Cluster() {
             </ul>
           </Fragment>
         </Card>
-        <CheckpointList cluster={cluster} />
+        <div className={cx("textMedium13", style.selectTable)}>
+          {/* <span style={{marginRight: '8px'}}>Table:</span> */}
+          <span
+            className={cx(
+              style.selectTableOption,
+              currentTable === "Checkpoints" && style.selected
+            )}
+            onClick={() => setCurrentTable("Checkpoints")}
+          >
+            Checkpoints
+          </span>{" "}
+          |{" "}
+          <span
+            className={cx(
+              style.selectTableOption,
+              currentTable === "Billing" && style.selected
+            )}
+            onClick={() => setCurrentTable("Billing")}
+          >
+            Billing
+          </span>
+        </div>
+        {currentTable === "Checkpoints" ? (
+          <CheckpointList cluster={cluster} />
+        ) : (
+          <Table
+            className={style.billingTable}
+            columns={[
+              {
+                title: "Billing Time",
+                dataIndex: "time",
+                key: "time",
+                width: 150,
+                render: (time: number) => {
+                  return formatDate(time);
+                },
+              },
+              {
+                title: "Average Backup Storage Size",
+                dataIndex: "backupStorageSize",
+                key: "backupStorageSize",
+                width: 200,
+              },
+              {
+                title: "Estimated Payment",
+                dataIndex: "price",
+                key: "price",
+                width: 150,
+              },
+              {
+                title: "Status",
+                dataIndex: "status",
+                key: "status",
+                width: 150,
+              },
+            ]}
+            dataSource={[
+              {
+                time: Number(new Date("2022-01-31")),
+                backupStorageSize: "300GB",
+                price: "$9.00",
+                status: "Pending",
+              },
+              // {
+              //   item: "ETL",
+              //   count: "1",
+              //   unitPrice: "$100",
+              //   price: "$100",
+              // },
+              // {
+              //   item: "TOTAL",
+              //   price: "$1000",
+              // },
+            ]}
+            rowKey="item"
+          />
+        )}
       </Fragment>
     </Layout>
   );

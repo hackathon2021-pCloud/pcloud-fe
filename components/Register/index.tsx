@@ -171,7 +171,7 @@ export default function Register() {
               </ul>
             </Card>
             <div className={style.billingTitle}>
-              Estimated Charge:{" "}
+              Estimated Price:{" "}
               <span className={style.billingPrice}>
                 ${backupPriceInfo.price}
               </span>
