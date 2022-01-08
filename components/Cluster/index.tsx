@@ -245,7 +245,7 @@ export default function Cluster() {
               //   price: "$1000",
               // },
             ]}
-            rowKey="item"
+            rowKey="time"
           />
         )}
       </Fragment>
