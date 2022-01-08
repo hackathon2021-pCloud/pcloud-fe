@@ -1,15 +1,16 @@
 import React from "react";
-import cx from 'classnames'
+import cx from "classnames";
 import { useUser } from "@auth0/nextjs-auth0";
 import { useRouter } from "next/router";
 import "antd/dist/antd.css";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Modal } from "antd";
 import {
   DashboardOutlined,
   DatabaseOutlined,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import Head from "next/head";
-import * as style from './Layout.module.css'
+import * as style from "./Layout.module.css";
 import Avatar from "./Avatar";
 import { SWRConfig } from "swr";
 
@@ -17,14 +18,14 @@ const { Header, Content, Sider } = Layout;
 
 export default function BasicLayout({
   children,
-  title = 'pCloud Admin',
+  title = "pCloud Admin",
 }: {
   children: React.ReactChild;
-  title?: string
+  title?: string;
 }) {
   const { user, error, isLoading } = useUser();
   const [collapsed, setCollapsed] = React.useState(false);
-  const router = useRouter()
+  const router = useRouter();
 
   if (!user) {
     return null;
@@ -85,7 +86,16 @@ export default function BasicLayout({
             theme="light"
             selectedKeys={[router.pathname]}
             onSelect={(info) => {
-              router.push(info.key);
+              if (info.key === "/api/auth/logout") {
+                Modal.confirm({
+                  title: "Confirm to log out",
+                  onOk: () => {
+                    location.href = info.key;
+                  },
+                });
+              } else {
+                router.push(info.key);
+              }
             }}
           >
             <Menu.Item
@@ -101,6 +111,13 @@ export default function BasicLayout({
               className={cx("textMedium13", style.menuItem)}
             >
               Clusters
+            </Menu.Item>
+            <Menu.Item
+              key="/api/auth/logout"
+              icon={<LogoutOutlined />}
+              className={cx("textMedium13", style.menuItem)}
+            >
+              Log Out
             </Menu.Item>
           </Menu>
         </Sider>
