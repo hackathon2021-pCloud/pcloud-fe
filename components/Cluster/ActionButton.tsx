@@ -32,7 +32,7 @@ export default function ActionButton({
         const token = json.token;
         setIsLoading(false);
         Modal.info({
-          title: <span className={style.modalTitle}>Checkpoint Token</span>,
+          title: <span className={style.modalTitle}>Restore to Checkpoint</span>,
           content: (
             <div className={style.modalContent}>
               <p className={cx(style.token, "textMedium15")}>{token}</p>
@@ -47,7 +47,7 @@ export default function ActionButton({
       }}
       className={style.button}
     >
-      {tokenType === 'checkpoint' ? 'Checkpoint Token' : 'Replication Token'}
+      Restore
     </Button>
   );
 }

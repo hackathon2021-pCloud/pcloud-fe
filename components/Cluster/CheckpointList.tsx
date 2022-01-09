@@ -7,6 +7,8 @@ import Loader from "../Loader";
 import ActionButton from "./ActionButton";
 import formatDate, {formatTime} from "../../client-utils/formatDate";
 import * as style from './CheckpointList.module.css';
+import { Tag } from "antd";
+import {CheckCircleOutlined} from '@ant-design/icons'
 
 interface ClusterCheckPoint {
   clusterId: string;
@@ -32,21 +34,21 @@ export default function CheckpointList({ cluster }: { cluster: ClusterInfo }) {
       title: "Checkpoint Time",
       dataIndex: "checkpointTime",
       key: "checkpointTime",
-      width: 170,
+      width: 250,
       render: (time) => (
         <div className={style.dateWrapper}>
-          <span className={cx(style.timeString)}>{formatTime(time)}</span>
+          <span className={cx(style.timeString)}>{formatTime(time)}</span>,{" "}
           <span className={cx(style.dateString)}>{formatDate(time)}</span>
         </div>
       ),
     },
-    {
-      title: "Operator",
-      dataIndex: "operator",
-      key: "operator",
-      render: (value) => value || "unknown",
-      width: 80,
-    },
+    // {
+    //   title: "Operator",
+    //   dataIndex: "operator",
+    //   key: "operator",
+    //   render: (value) => value || "unknown",
+    //   width: 80,
+    // },
     {
       title: "Upload Progress",
       key: "uploadProgress",
@@ -55,24 +57,23 @@ export default function CheckpointList({ cluster }: { cluster: ClusterInfo }) {
         if (uploadProgress < 100) {
           return <Progress percent={row.uploadProgress} status="active" />;
         }
-        return "Finished";
+        return (
+          <Tag icon={<CheckCircleOutlined />} color="success">
+            Finished
+          </Tag>
+        );
       },
       width: 130,
     },
     {
       title: "Action",
       key: "action",
-      width: 300,
+      width: 100,
       render: (text, row) => (
         <div className={style.buttonWrapper}>
           <ActionButton
             key="checkpoint"
             tokenType="checkpoint"
-            checkPoint={row}
-          />
-          <ActionButton
-            key="replication"
-            tokenType="replication"
             checkPoint={row}
           />
         </div>
