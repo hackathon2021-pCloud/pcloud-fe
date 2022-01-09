@@ -8,6 +8,7 @@ import {
   DashboardOutlined,
   DatabaseOutlined,
   LogoutOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import Head from "next/head";
 import * as style from "./Layout.module.css";
@@ -111,6 +112,13 @@ export default function BasicLayout({
               className={cx("textMedium13", style.menuItem)}
             >
               Clusters
+            </Menu.Item>
+            <Menu.Item
+              key="/settings"
+              icon={<SettingOutlined />}
+              className={cx("textMedium13", style.menuItem)}
+            >
+              Settings
             </Menu.Item>
             <Menu.Item
               key="/api/auth/logout"

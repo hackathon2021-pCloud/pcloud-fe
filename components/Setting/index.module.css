@@ -1,0 +1,52 @@
+.keyCard {
+	/* display: flex;
+	align-items: center;
+	justify-content: space-between; */
+	padding: 0;
+	padding-top: 20px;
+}
+
+.keyCardHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 0 20px;
+}
+
+.keyCardHeaderName {
+	display: flex;
+	 align-items: center;
+}
+
+
+.keyCardHeaderName svg {
+	margin-right: 10px;
+}
+
+.keyCardHeaderName p {
+	margin: 0;
+}
+
+.keyCardContent {
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: 20px;
+	justify-content: space-between;
+	padding: 0 20px;
+}
+
+.keyCardInfo {
+	flex-basis: 30%;
+}
+
+.keyContent {
+	margin-top: 10px;
+}
+
+.keyContent pre {
+ white-space: pre-wrap;       /* css-3 */
+ white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+ white-space: -pre-wrap;      /* Opera 4-6 */
+ white-space: -o-pre-wrap;    /* Opera 7 */
+ word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}

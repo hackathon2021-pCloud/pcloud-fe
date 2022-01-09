@@ -18,7 +18,7 @@ export default function Input({
   return (
     <label className={cx(style.wrapper, style[type], className)}>
       <span className={style.label}>{label}</span>
-      <input disabled={type === 'showing'} value={value} className={style.input} onChange={onChange}/>
+      {typeof value === 'string' ? <input disabled={type === 'showing'} value={value} className={style.input} onChange={onChange}/> : value}
     </label>
   );
 }

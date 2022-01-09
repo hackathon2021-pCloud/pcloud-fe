@@ -1,54 +1,69 @@
 .header {
-	display: flex;
-	justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 .infoList {
-	display: flex;
-	flex-wrap: wrap;
-	margin-bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 0;
 }
 
 .infoItem {
-	flex-basis: 30%;
+  flex-basis: 30%;
 }
 
 .infoItem:nth-child(1) {
-	margin-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.keyLink {
+  border: none;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 19px;
+  /* table_black */
+  /* color: #323c47; */
+  border-bottom: none;
+  padding-bottom: 6px;
+  margin-top: 4px;
+  outline: none;
+  padding-left: 0;
+  padding-top: 1px;
 }
 
 .loadingOverlay {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .forbiddenWrapper {
-	width: 100%;
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .selectTable {
-	margin-bottom: 10px;
-	font-weight: 400;
+  margin-bottom: 10px;
+  font-weight: 400;
 }
 
 .selectTableOption {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 .selectTableOption.selected {
-	color: #109CF1;
+  color: #109cf1;
 }
 
 .forbiddenIcon {
-	font-size: 50px;
-	color: var(--grey);
-	fill: var(--grey);
+  font-size: 50px;
+  color: var(--grey);
+  fill: var(--grey);
 }

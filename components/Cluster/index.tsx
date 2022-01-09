@@ -10,7 +10,7 @@ import * as style from "./index.module.css";
 import CheckpointList from "./CheckpointList";
 import useCluster from "../../client-utils/useCluster";
 import Loader from "../Loader";
-import { WarningOutlined, DownOutlined } from "@ant-design/icons";
+import { WarningOutlined, DownOutlined, LinkOutlined } from "@ant-design/icons";
 import { Dropdown, Menu, message, Modal, Table } from "antd";
 import { ClusterDeleteRequestBody, ClusterDeleteResponse } from "../../types";
 import formatDate from "../../client-utils/formatDate";
@@ -34,6 +34,20 @@ const BASIC_INFO = [
   { label: "ID", key: "id" },
   { label: "Setup Status", key: "setupStatus" },
   { label: "Storage Provider", key: "storageProvider" },
+  {
+    label: "Secret Key",
+    key: 'secretKey',
+    formatter: () => {
+      return (
+        <Link href={`/settings`}>
+          <a className={style.keyLink}>
+            SHA256:tlJ9Hy***fV+s8ZgeA
+            <LinkOutlined />
+          </a>
+        </Link>
+      );
+    }
+  }
 ];
 
 /**
