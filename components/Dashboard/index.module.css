@@ -7,13 +7,16 @@
 	flex-basis: 60%;
 	width: 60%;
 	margin: 0;
-	padding: 16px 24px;
 }
 
-.backupSizeCard {
-	flex-basis: calc(40% - 24px);
+.cardList {
+		flex-basis: calc(40% - 24px);
 	align-self: flex-start;
 	width: calc(40% - 24px);
 	margin: 0;
-	padding: 16px 24px;
+}
+
+.backupSizeCard {
+	margin: 0;
+		margin-bottom: 20px;
 }
