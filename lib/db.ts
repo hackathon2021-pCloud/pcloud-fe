@@ -132,10 +132,10 @@ class HashMapOperator<T extends BasicJsonModel> {
     return successResponse(res);
   };
 
-  deleteJson = async ({id}: {id: string}) => {
+  deleteJson = async ({ id }: { id: string }) => {
     const deletedCount = await redis.del(toRedisKey(this.name, id));
-    return deletedCount
-  }
+    return deletedCount;
+  };
 }
 export const ClusterInfoOperator = new HashMapOperator<ClusterInfo>(
   RedisKeyPrefix.clusterInfo,
@@ -174,16 +174,16 @@ export const getUserClusterList = async ({
   from: number;
   limit: number;
 }) => {
-  const clusterIds = await redis.zrevrange(
-    toRedisKey(RedisKeyPrefix.userClusterSortedSet, userid),
-    from,
-    from + limit
-  );
+  const key = toRedisKey(RedisKeyPrefix.userClusterSortedSet, userid);
+  const clusterIds = await redis.zrevrange(key, from, from + limit);
   const result: ClusterInfo[] = [];
   for (let id of clusterIds) {
     const clusterInfo = await ClusterInfoOperator.getJson({ id });
     if ("payload" in clusterInfo) {
       result.push(clusterInfo.payload);
+    } else if (clusterInfo.errorCode === 404) {
+      console.log(`cannot find cluster ${id}`);
+      await redis.zrem(key, id);
     }
   }
   return result;
