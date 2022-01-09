@@ -2,11 +2,10 @@
 }
 
 .sider :global(.ant-menu-title-content) {
-	margin-left: 14px !important;
+  margin-left: 14px !important;
 }
 
 .logo {
-  padding: 17px 24px;
   height: 60px;
   border-bottom: 1px solid #ebeff2;
 
@@ -17,6 +16,14 @@
   /* Accent blue */
 
   color: #109cf1;
+}
+
+.logoImage {
+  padding-left: 24px;
+  display: block;
+  object-fit: contain;
+  width: 120px;
+  height: 60px;
 }
 
 .user {
@@ -53,5 +60,5 @@
 }
 
 .header {
-	background-color: #ffffff;
+  background-color: #ffffff;
 }

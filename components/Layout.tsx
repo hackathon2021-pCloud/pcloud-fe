@@ -14,6 +14,7 @@ import Head from "next/head";
 import * as style from "./Layout.module.css";
 import Avatar from "./Avatar";
 import { SWRConfig } from "swr";
+import Logo from '../public/logo.png'
 
 const { Header, Content, Sider } = Layout;
 
@@ -59,7 +60,7 @@ export default function BasicLayout({
           width={256}
           collapsedWidth={94}
         >
-          <div className={style.logo}>pCloud</div>
+          <div className={style.logo}><img src={Logo.src} className={style.logoImage}/></div>
           <div className={style.user}>
             <Avatar user={user} shadow={false} className={style.avatar} />
             <div>
